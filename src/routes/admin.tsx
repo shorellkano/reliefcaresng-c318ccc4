@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Pencil, Trash2, LogOut, Save, X } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Save, X, Mail, Briefcase, MessageSquare, Users } from "lucide-react";
+
+const ADMIN_EMAIL = "reliefcare@zohomail.com";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -29,7 +31,6 @@ type Staff = {
   available: boolean;
   display_order: number;
 };
-
 type StaffForm = Omit<Staff, "id">;
 
 const EMPTY: StaffForm = {
@@ -66,19 +67,23 @@ function Admin() {
   async function onAuth(e: React.FormEvent) {
     e.preventDefault();
     setErr(null);
+    const normalized = email.trim().toLowerCase();
+    if (normalized !== ADMIN_EMAIL) {
+      setErr(`Admin access is restricted to ${ADMIN_EMAIL}.`);
+      return;
+    }
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({
-        email, password,
+        email: normalized, password,
         options: { emailRedirectTo: `${window.location.origin}/admin` },
       });
       if (error) return setErr(error.message);
-      // First user becomes admin via self-grant if no admins exist yet
       if (data.user) {
         const { count } = await supabase.from("user_roles").select("*", { count: "exact", head: true }).eq("role", "admin");
         if (!count) await supabase.from("user_roles").insert({ user_id: data.user.id, role: "admin" });
       }
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email: normalized, password });
       if (error) setErr(error.message);
     }
   }
@@ -88,22 +93,21 @@ function Admin() {
   if (!authed) {
     return (
       <Layout hideWhatsApp>
-        <section className="py-24 bg-ivory-texture min-h-[70vh]">
+        <section className="py-16 bg-ivory-texture min-h-[70vh]">
           <form onSubmit={onAuth} className="max-w-md mx-auto bg-card rounded-3xl shadow-2xl p-8 space-y-5">
             <h1 className="font-display text-3xl text-primary">Admin {mode === "signin" ? "sign in" : "sign up"}</h1>
-            <p className="text-sm text-muted-foreground">Manage staff profiles, availability and content.</p>
+            <p className="text-sm text-muted-foreground">Access restricted to <strong>{ADMIN_EMAIL}</strong>.</p>
             <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" required
               className="w-full rounded-xl border border-border bg-input/40 px-4 py-3" />
             <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" required minLength={6}
               className="w-full rounded-xl border border-border bg-input/40 px-4 py-3" />
             {err && <p className="text-destructive text-sm">{err}</p>}
             <button className="w-full rounded-full bg-primary text-primary-foreground py-3 font-bold">
-              {mode === "signin" ? "Sign in" : "Create account"}
+              {mode === "signin" ? "Sign in" : "Create admin account"}
             </button>
             <button type="button" onClick={() => setMode(mode === "signin" ? "signup" : "signin")} className="text-sm text-primary underline w-full">
-              {mode === "signin" ? "Need an account? Sign up" : "Have an account? Sign in"}
+              {mode === "signin" ? "First time? Create admin account" : "Already have an account? Sign in"}
             </button>
-            <p className="text-xs text-muted-foreground text-center">The first account created automatically becomes the admin.</p>
           </form>
         </section>
       </Layout>
@@ -125,9 +129,155 @@ function Admin() {
   return <AdminPanel />;
 }
 
+type Tab = "hire" | "apply" | "contact" | "staff";
+
 function AdminPanel() {
+  const [tab, setTab] = useState<Tab>("hire");
+
+  return (
+    <Layout hideWhatsApp>
+      <section className="py-10 bg-ivory-texture min-h-screen">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <h1 className="font-display text-4xl text-primary">Admin Dashboard</h1>
+              <p className="text-sm text-muted-foreground">All form submissions and staff management.</p>
+            </div>
+            <button onClick={() => supabase.auth.signOut()} className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-bold">
+              <LogOut className="h-4 w-4" /> Sign out
+            </button>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-2 border-b border-border">
+            <TabBtn active={tab === "hire"} onClick={() => setTab("hire")} icon={<Briefcase className="h-4 w-4" />}>Hire requests</TabBtn>
+            <TabBtn active={tab === "apply"} onClick={() => setTab("apply")} icon={<Mail className="h-4 w-4" />}>Job applications</TabBtn>
+            <TabBtn active={tab === "contact"} onClick={() => setTab("contact")} icon={<MessageSquare className="h-4 w-4" />}>Contact messages</TabBtn>
+            <TabBtn active={tab === "staff"} onClick={() => setTab("staff")} icon={<Users className="h-4 w-4" />}>Staff</TabBtn>
+          </div>
+
+          <div className="mt-6">
+            {tab === "hire" && <HireList />}
+            {tab === "apply" && <ApplyList />}
+            {tab === "contact" && <ContactList />}
+            {tab === "staff" && <StaffManager />}
+          </div>
+        </div>
+      </section>
+    </Layout>
+  );
+}
+
+function TabBtn({ active, onClick, icon, children }: { active: boolean; onClick: () => void; icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <button onClick={onClick}
+      className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-t-lg transition ${
+        active ? "bg-card text-primary border-b-2 border-primary -mb-px" : "text-muted-foreground hover:text-primary"
+      }`}>
+      {icon}{children}
+    </button>
+  );
+}
+
+function fmtDate(s: string) { return new Date(s).toLocaleString(); }
+
+function HireList() {
+  const [rows, setRows] = useState<any[]>([]);
+  useEffect(() => { supabase.from("hire_requests").select("*").order("created_at", { ascending: false }).then(({ data }) => setRows(data ?? [])); }, []);
+  return (
+    <div className="space-y-3">
+      {rows.length === 0 && <Empty label="No hire requests yet." />}
+      {rows.map((r) => (
+        <details key={r.id} className="bg-card rounded-xl shadow-sm p-4">
+          <summary className="cursor-pointer flex flex-wrap gap-2 items-center justify-between">
+            <div>
+              <p className="font-bold text-primary">{r.full_name}</p>
+              <p className="text-xs text-muted-foreground">{r.staff_type} · {r.phone}</p>
+            </div>
+            <span className="text-xs text-muted-foreground">{fmtDate(r.created_at)}</span>
+          </summary>
+          <dl className="mt-3 grid sm:grid-cols-2 gap-2 text-sm">
+            <KV k="Email" v={r.email} /><KV k="WhatsApp" v={r.whatsapp} />
+            <KV k="Address" v={r.home_address} /><KV k="Live preference" v={r.live_preference} />
+            <KV k="Number of staff" v={r.number_of_staff} /><KV k="Start date" v={r.preferred_start_date} />
+            <KV k="Heard about us" v={r.hear_about_us} />
+            <KV k="Requirements" v={r.requirements} full />
+          </dl>
+        </details>
+      ))}
+    </div>
+  );
+}
+
+function ApplyList() {
+  const [rows, setRows] = useState<any[]>([]);
+  useEffect(() => { supabase.from("job_applications").select("*").order("created_at", { ascending: false }).then(({ data }) => setRows(data ?? [])); }, []);
+  return (
+    <div className="space-y-3">
+      {rows.length === 0 && <Empty label="No job applications yet." />}
+      {rows.map((r) => (
+        <details key={r.id} className="bg-card rounded-xl shadow-sm p-4">
+          <summary className="cursor-pointer flex flex-wrap gap-3 items-center justify-between">
+            <div className="flex items-center gap-3">
+              {r.photo_url && <img src={r.photo_url} alt="" className="h-12 w-12 rounded-full object-cover" />}
+              <div>
+                <p className="font-bold text-primary">{r.full_name}</p>
+                <p className="text-xs text-muted-foreground">{r.job_category} · {r.phone}</p>
+              </div>
+            </div>
+            <span className="text-xs text-muted-foreground">{fmtDate(r.created_at)}</span>
+          </summary>
+          <dl className="mt-3 grid sm:grid-cols-2 gap-2 text-sm">
+            <KV k="Email" v={r.email} /><KV k="DOB" v={r.date_of_birth} />
+            <KV k="Age" v={r.age} /><KV k="Gender" v={r.gender} />
+            <KV k="State of origin" v={r.state_of_origin} /><KV k="Years experience" v={r.years_experience} />
+            <KV k="Address" v={r.home_address} full />
+            <KV k="Work history" v={r.work_history} full />
+            <KV k="Certifications" v={r.certifications} full />
+            <KV k="Statement" v={r.personal_statement} full />
+            {r.id_url && <KV k="ID" v={<a href={r.id_url} target="_blank" rel="noreferrer" className="text-primary underline">View ID document</a>} full />}
+          </dl>
+        </details>
+      ))}
+    </div>
+  );
+}
+
+function ContactList() {
+  const [rows, setRows] = useState<any[]>([]);
+  useEffect(() => { supabase.from("contact_messages").select("*").order("created_at", { ascending: false }).then(({ data }) => setRows(data ?? [])); }, []);
+  return (
+    <div className="space-y-3">
+      {rows.length === 0 && <Empty label="No contact messages yet." />}
+      {rows.map((r) => (
+        <div key={r.id} className="bg-card rounded-xl shadow-sm p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="font-bold text-primary">{r.full_name} <span className="text-xs font-normal text-muted-foreground">· {r.subject}</span></p>
+              <p className="text-xs text-muted-foreground">{r.email} · {r.phone}</p>
+            </div>
+            <span className="text-xs text-muted-foreground">{fmtDate(r.created_at)}</span>
+          </div>
+          <p className="mt-2 text-sm whitespace-pre-wrap text-foreground/85">{r.message}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function KV({ k, v, full }: { k: string; v: any; full?: boolean }) {
+  if (v == null || v === "") return null;
+  return (
+    <div className={full ? "sm:col-span-2" : ""}>
+      <dt className="text-xs uppercase tracking-wide text-muted-foreground">{k}</dt>
+      <dd className="text-sm text-foreground/90 break-words">{v}</dd>
+    </div>
+  );
+}
+function Empty({ label }: { label: string }) { return <p className="text-center text-muted-foreground py-12">{label}</p>; }
+
+function StaffManager() {
   const [list, setList] = useState<Staff[]>([]);
-  const [editing, setEditing] = useState<StaffForm & { id?: string } | null>(null);
+  const [editing, setEditing] = useState<(StaffForm & { id?: string }) | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function load() {
@@ -139,15 +289,10 @@ function AdminPanel() {
   async function save() {
     if (!editing) return;
     setBusy(true);
-    const payload = { ...editing };
-    let res;
-    if (editing.id) {
-      const { id, ...rest } = payload;
-      res = await supabase.from("staff_profiles").update(rest).eq("id", id);
-    } else {
-      const { id: _id, ...rest } = payload;
-      res = await supabase.from("staff_profiles").insert(rest);
-    }
+    const { id, ...rest } = editing;
+    const res = id
+      ? await supabase.from("staff_profiles").update(rest).eq("id", id)
+      : await supabase.from("staff_profiles").insert(rest);
     setBusy(false);
     if (res.error) return alert(res.error.message);
     setEditing(null); load();
@@ -174,44 +319,30 @@ function AdminPanel() {
   }
 
   return (
-    <Layout hideWhatsApp>
-      <section className="py-12 bg-ivory-texture min-h-screen">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div>
-              <h1 className="font-display text-4xl text-primary">Staff Admin</h1>
-              <p className="text-sm text-muted-foreground">Add, edit and toggle availability.</p>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => setEditing({ ...EMPTY })} className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 font-bold">
-                <Plus className="h-4 w-4" /> New profile
+    <div>
+      <div className="flex justify-end mb-4">
+        <button onClick={() => setEditing({ ...EMPTY })} className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 font-bold">
+          <Plus className="h-4 w-4" /> New profile
+        </button>
+      </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {list.map((s) => (
+          <div key={s.id} className="bg-card rounded-2xl shadow p-4 flex gap-4">
+            <img src={s.photo_url ?? ""} alt="" className="h-20 w-20 rounded-xl object-cover" />
+            <div className="flex-1 min-w-0">
+              <p className="font-display text-lg text-primary truncate">{s.full_name}</p>
+              <p className="text-xs text-orange font-semibold">{s.job_role}</p>
+              <button onClick={() => toggle(s)} className={`mt-1 text-xs px-2 py-0.5 rounded-full ${s.available ? "bg-amber text-amber-foreground" : "bg-muted text-foreground"}`}>
+                {s.available ? "Available" : "Currently Placed"}
               </button>
-              <button onClick={() => supabase.auth.signOut()} className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-bold">
-                <LogOut className="h-4 w-4" /> Sign out
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {list.map((s) => (
-              <div key={s.id} className="bg-card rounded-2xl shadow p-4 flex gap-4">
-                <img src={s.photo_url ?? ""} alt="" className="h-20 w-20 rounded-xl object-cover" />
-                <div className="flex-1 min-w-0">
-                  <p className="font-display text-lg text-primary truncate">{s.full_name}</p>
-                  <p className="text-xs text-orange font-semibold">{s.job_role}</p>
-                  <button onClick={() => toggle(s)} className={`mt-1 text-xs px-2 py-0.5 rounded-full ${s.available ? "bg-amber text-amber-foreground" : "bg-muted text-foreground"}`}>
-                    {s.available ? "Available" : "Currently Placed"}
-                  </button>
-                  <div className="mt-2 flex gap-2">
-                    <button onClick={() => setEditing({ ...s })} className="text-primary"><Pencil className="h-4 w-4" /></button>
-                    <button onClick={() => remove(s.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></button>
-                  </div>
-                </div>
+              <div className="mt-2 flex gap-2">
+                <button onClick={() => setEditing({ ...s })} className="text-primary"><Pencil className="h-4 w-4" /></button>
+                <button onClick={() => remove(s.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></button>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
 
       {editing && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-start justify-center overflow-y-auto p-4">
@@ -252,7 +383,7 @@ function AdminPanel() {
           </div>
         </div>
       )}
-    </Layout>
+    </div>
   );
 }
 
