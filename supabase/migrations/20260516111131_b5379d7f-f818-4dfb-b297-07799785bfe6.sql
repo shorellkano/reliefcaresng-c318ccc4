@@ -1,0 +1,1 @@
+UPDATE public.staff_profiles SET photo_url = REPLACE(photo_url, '/src/assets/', '/staff/');
