@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { sendFormNotification } from "@/lib/notify.functions";
 import { CheckCircle2, MapPin, Phone, Mail, Instagram, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
@@ -26,13 +27,15 @@ function Contact() {
     e.preventDefault();
     setBusy(true);
     const f = new FormData(e.currentTarget);
-    await supabase.from("contact_messages").insert({
+    const payload = {
       full_name: String(f.get("full_name") ?? ""),
       phone: String(f.get("phone") ?? ""),
       email: String(f.get("email") ?? ""),
       subject: String(f.get("subject") ?? ""),
       message: String(f.get("message") ?? ""),
-    });
+    };
+    await supabase.from("contact_messages").insert(payload);
+    sendFormNotification({ data: { kind: "contact", subject: `New Contact Message — ${payload.subject || payload.full_name}`, fields: payload } }).catch(() => {});
     setBusy(false); setDone(true);
   }
 

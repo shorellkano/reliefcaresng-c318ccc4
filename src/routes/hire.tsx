@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { sendFormNotification } from "@/lib/notify.functions";
 import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/hire")({
@@ -30,7 +31,7 @@ function Hire() {
     e.preventDefault();
     setBusy(true); setErr(null);
     const f = new FormData(e.currentTarget);
-    const { error } = await supabase.from("hire_requests").insert({
+    const payload = {
       full_name: String(f.get("full_name") ?? ""),
       phone: String(f.get("phone") ?? ""),
       whatsapp: String(f.get("whatsapp") ?? ""),
@@ -42,7 +43,11 @@ function Hire() {
       requirements: String(f.get("notes") ?? ""),
       preferred_start_date: f.get("start") ? String(f.get("start")) : null,
       hear_about_us: String(f.get("hear") ?? ""),
-    });
+    };
+    const { error } = await supabase.from("hire_requests").insert(payload);
+    if (!error) {
+      sendFormNotification({ data: { kind: "hire", subject: `New Hire Request — ${payload.full_name}`, fields: payload } }).catch(() => {});
+    }
     setBusy(false);
     if (error) { setErr(error.message); return; }
     setDone(true);
