@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { sendFormNotification } from "@/lib/notify.functions";
 import { CheckCircle2, Upload } from "lucide-react";
 
 export const Route = createFileRoute("/apply")({
@@ -42,7 +43,7 @@ function Apply() {
     try {
       const photo = await uploadFile(f.get("photo") as File, "photos");
       const idDoc = await uploadFile(f.get("id_doc") as File, "ids");
-      const { error } = await supabase.from("job_applications").insert({
+      const payload = {
         full_name: String(f.get("full_name") ?? ""),
         date_of_birth: f.get("date_of_birth") ? String(f.get("date_of_birth")) : null,
         age: f.get("age") ? Number(f.get("age")) : null,
@@ -58,8 +59,10 @@ function Apply() {
         personal_statement: String(f.get("statement") ?? ""),
         photo_url: photo,
         id_url: idDoc,
-      });
+      };
+      const { error } = await supabase.from("job_applications").insert(payload);
       if (error) throw error;
+      sendFormNotification({ data: { kind: "apply", subject: `New Job Application — ${payload.full_name}`, fields: payload } }).catch(() => {});
       setDone(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e: unknown) {
