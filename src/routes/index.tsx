@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, Heart, Home as HomeIcon, ShieldCheck, Sparkles, Quote, HandHeart } from "lucide-react";
-import { motion } from "motion/react";
+import { ArrowRight, Heart, Home as HomeIcon, ShieldCheck, Quote, HandHeart } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import heroImg from "@/assets/hero-care.jpg";
@@ -35,38 +35,8 @@ function Index() {
       <section className="relative bg-ivory-texture overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-10 items-center pt-14 pb-24 lg:py-28">
           <div className="lg:col-span-6 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="relative inline-flex items-center gap-2.5 px-1 py-1 rounded-full bg-gradient-to-r from-amber/30 via-orange/20 to-amber/30 ring-1 ring-amber/40 shadow-[0_8px_24px_-12px_oklch(0.78_0.16_70/.6)] overflow-hidden"
-            >
-              <motion.span
-                aria-hidden
-                className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/60 to-transparent"
-                animate={{ x: ["-120%", "220%"] }}
-                transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.2 }}
-              />
-              <motion.span
-                className="relative grid place-items-center h-7 w-7 rounded-full bg-primary text-amber"
-                animate={{ rotate: [0, -8, 8, 0] }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.5 }}
-              >
-                <HandHeart className="h-3.5 w-3.5" />
-              </motion.span>
-              <span className="relative pr-4 text-xs sm:text-sm font-bold tracking-wider uppercase text-primary">
-                Hands you can trust
-              </span>
-              <motion.span
-                aria-hidden
-                className="relative pr-2 text-amber"
-                animate={{ scale: [1, 1.25, 1], rotate: [0, 20, -20, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-              </motion.span>
-            </motion.div>
-            <h1 className="animate-fade-up font-display text-5xl sm:text-6xl lg:text-7xl text-primary leading-[1.05] mt-5" style={{animationDelay:'.1s'}}>
+            <KineticSeal />
+            <h1 className="animate-fade-up font-display text-5xl sm:text-6xl lg:text-7xl text-primary leading-[1.05] mt-6" style={{animationDelay:'.1s'}}>
               Reliable Hands<br />for Every <span className="italic text-orange">Home</span>
             </h1>
             <p className="animate-fade-up mt-6 text-lg text-foreground/75 max-w-xl" style={{animationDelay:'.2s'}}>
