@@ -14,16 +14,234 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          message: string
+          phone: string | null
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          message: string
+          phone?: string | null
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          message?: string
+          phone?: string | null
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      hire_requests: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          hear_about_us: string | null
+          home_address: string | null
+          id: string
+          live_preference: string | null
+          number_of_staff: number | null
+          phone: string
+          preferred_start_date: string | null
+          requirements: string | null
+          staff_type: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name: string
+          hear_about_us?: string | null
+          home_address?: string | null
+          id?: string
+          live_preference?: string | null
+          number_of_staff?: number | null
+          phone: string
+          preferred_start_date?: string | null
+          requirements?: string | null
+          staff_type?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          hear_about_us?: string | null
+          home_address?: string | null
+          id?: string
+          live_preference?: string | null
+          number_of_staff?: number | null
+          phone?: string
+          preferred_start_date?: string | null
+          requirements?: string | null
+          staff_type?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      job_applications: {
+        Row: {
+          age: number | null
+          certifications: string | null
+          created_at: string
+          date_of_birth: string | null
+          email: string | null
+          full_name: string
+          gender: string | null
+          home_address: string | null
+          id: string
+          id_url: string | null
+          job_category: string | null
+          personal_statement: string | null
+          phone: string
+          photo_url: string | null
+          state_of_origin: string | null
+          work_history: string | null
+          years_experience: number | null
+        }
+        Insert: {
+          age?: number | null
+          certifications?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          full_name: string
+          gender?: string | null
+          home_address?: string | null
+          id?: string
+          id_url?: string | null
+          job_category?: string | null
+          personal_statement?: string | null
+          phone: string
+          photo_url?: string | null
+          state_of_origin?: string | null
+          work_history?: string | null
+          years_experience?: number | null
+        }
+        Update: {
+          age?: number | null
+          certifications?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          full_name?: string
+          gender?: string | null
+          home_address?: string | null
+          id?: string
+          id_url?: string | null
+          job_category?: string | null
+          personal_statement?: string | null
+          phone?: string
+          photo_url?: string | null
+          state_of_origin?: string | null
+          work_history?: string | null
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
+      staff_profiles: {
+        Row: {
+          age: number | null
+          available: boolean
+          bio: string | null
+          created_at: string
+          display_order: number
+          duration_with_company: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          job_role: string
+          photo_url: string | null
+          skills: string | null
+          state_of_origin: string | null
+          updated_at: string
+          years_experience: number | null
+        }
+        Insert: {
+          age?: number | null
+          available?: boolean
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          duration_with_company?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          job_role: string
+          photo_url?: string | null
+          skills?: string | null
+          state_of_origin?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Update: {
+          age?: number | null
+          available?: boolean
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          duration_with_company?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          job_role?: string
+          photo_url?: string | null
+          skills?: string | null
+          state_of_origin?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +368,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
