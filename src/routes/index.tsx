@@ -85,7 +85,7 @@ function Index() {
             <div className="absolute -top-6 -right-6 w-72 h-72 bg-amber/30 rounded-full blur-3xl" />
             <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-primary/20 rounded-full blur-3xl" />
             <div className="relative rounded-[2rem] overflow-hidden shadow-2xl rotate-1">
-              <img src={heroImg} alt="A caregiver helping an elderly woman in her home" width={1280} height={1280} className="w-full h-[28rem] lg:h-[34rem] object-cover" />
+              <img src={heroImg} alt="A caregiver helping an elderly woman in her home" width={1280} height={1280} className="w-full h-72 sm:h-80 lg:h-[26rem] object-cover" />
               <div className="absolute bottom-5 left-5 right-5 backdrop-blur bg-deep-blue/80 text-white rounded-2xl p-4 flex items-center gap-3">
                 <div className="h-12 w-12 rounded-full bg-amber flex items-center justify-center text-amber-foreground">
                   <Heart className="h-6 w-6" />
