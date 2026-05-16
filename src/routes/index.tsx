@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, Heart, Home as HomeIcon, ShieldCheck, Sparkles, Quote } from "lucide-react";
+import { ArrowRight, Heart, Home as HomeIcon, ShieldCheck, Sparkles, Quote, HandHeart } from "lucide-react";
+import { motion } from "motion/react";
 import { Layout } from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import heroImg from "@/assets/hero-care.jpg";
