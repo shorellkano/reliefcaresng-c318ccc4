@@ -1,6 +1,6 @@
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link, useRouter, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Instagram, Phone, MapPin, Mail } from "lucide-react";
+import { Menu, X, Instagram, Phone, MapPin, Mail, ArrowLeft, Lock } from "lucide-react";
 import logo from "@/assets/logo.jpg";
 import { WhatsAppWidget } from "./WhatsAppWidget";
 
@@ -19,6 +19,7 @@ export function Layout({ children, hideWhatsApp = false }: { children: React.Rea
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -27,13 +28,11 @@ export function Layout({ children, hideWhatsApp = false }: { children: React.Rea
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // close menu on route change
   useEffect(() => {
     const unsub = router.subscribe("onResolved", () => setOpen(false));
     return unsub;
   }, [router]);
 
-  // reveal on scroll
   useEffect(() => {
     const els = document.querySelectorAll(".reveal");
     const io = new IntersectionObserver(
@@ -44,11 +43,13 @@ export function Layout({ children, hideWhatsApp = false }: { children: React.Rea
     return () => io.disconnect();
   });
 
+  const showBack = pathname !== "/";
+
   return (
     <div className="min-h-screen flex flex-col bg-ivory">
       <header className={`sticky top-0 z-40 transition-all ${scrolled ? "bg-ivory/90 backdrop-blur shadow-md" : "bg-ivory/70 backdrop-blur"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 lg:h-20">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2" aria-label="Go to home">
             <img src={logo} alt="Relief Care Support" className="h-10 w-10 lg:h-12 lg:w-12 rounded-full object-cover ring-2 ring-primary/20" />
             <span className="hidden sm:block font-display text-primary text-lg leading-tight">
               Relief Care<br/><span className="text-xs tracking-widest text-orange uppercase">Support Services</span>
@@ -91,6 +92,18 @@ export function Layout({ children, hideWhatsApp = false }: { children: React.Rea
         )}
       </header>
 
+      {showBack && (
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-4">
+          <button
+            onClick={() => (window.history.length > 1 ? window.history.back() : router.navigate({ to: "/" }))}
+            className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-card/60 backdrop-blur px-3.5 py-1.5 text-sm font-semibold text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition"
+            aria-label="Go back to previous page"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back
+          </button>
+        </div>
+      )}
+
       <main className="flex-1">{children}</main>
 
       <Footer />
@@ -104,13 +117,13 @@ function Footer() {
     <footer className="mt-24 bg-deep-blue text-primary-foreground">
       <div className="max-w-7xl mx-auto px-6 py-16 grid gap-10 md:grid-cols-4">
         <div>
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3" aria-label="Go to home">
             <img src={logo} alt="" className="h-12 w-12 rounded-full" />
             <div>
               <p className="font-display text-xl">Relief Care</p>
               <p className="text-xs uppercase tracking-widest text-amber">Support Services</p>
             </div>
-          </div>
+          </Link>
           <p className="mt-4 text-sm text-primary-foreground/80 italic">Lets give you a helping hand.</p>
         </div>
         <div>
@@ -142,7 +155,7 @@ function Footer() {
           <ul className="space-y-3 text-sm">
             <li className="flex gap-2"><MapPin className="h-4 w-4 mt-0.5 text-amber shrink-0" />Suite 12 Veteran Plaza, Herbert Macaulay Way, By YABATECH Back Gate, Lagos.</li>
             <li className="flex gap-2"><Phone className="h-4 w-4 mt-0.5 text-amber" /><a href="tel:+2349090336443">+234 909 033 6443</a></li>
-            <li className="flex gap-2"><Mail className="h-4 w-4 mt-0.5 text-amber" /><a href="mailto:info@reliefcaresupport.com">info@reliefcaresupport.com</a></li>
+            <li className="flex gap-2"><Mail className="h-4 w-4 mt-0.5 text-amber" /><a href="mailto:info@reliefcaresupport.com.ng">info@reliefcaresupport.com.ng</a></li>
           </ul>
           <div className="flex gap-3 mt-4">
             <a href="https://www.instagram.com/reliefcaredomestic" target="_blank" rel="noopener noreferrer" aria-label="Instagram reliefcaredomestic" className="h-10 w-10 rounded-full bg-amber/20 hover:bg-amber flex items-center justify-center transition"><Instagram className="h-5 w-5" /></a>
@@ -154,12 +167,15 @@ function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-primary-foreground/70">
-          <p>2025 Relief Care Support Services Limited. All rights reserved.</p>
-          <div className="flex gap-5">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-primary-foreground/70">
+          <p>© 2026 Relief Care Support Services Limited. All rights reserved.</p>
+          <div className="flex gap-5 items-center flex-wrap justify-center">
             <Link to="/privacy" className="hover:text-amber">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-amber">Terms and Conditions</Link>
             <Link to="/cookies" className="hover:text-amber">Cookie Policy</Link>
+            <Link to="/admin" className="inline-flex items-center gap-1 hover:text-amber" aria-label="Admin login">
+              <Lock className="h-3 w-3" /> Admin
+            </Link>
           </div>
         </div>
       </div>

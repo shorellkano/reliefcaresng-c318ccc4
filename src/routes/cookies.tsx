@@ -17,7 +17,7 @@ export const Route = createFileRoute("/cookies")({
     <H>Managing cookies</H>
     <p>You can disable or remove cookies through your browser settings. Disabling cookies may affect parts of the website such as form submissions.</p>
     <H>Contact</H>
-    <p>For cookie-related questions reach us at info@reliefcaresupport.com or +234 909 033 6443.</p>
+    <p>For cookie-related questions reach us at info@reliefcaresupport.com.ng or +234 909 033 6443.</p>
   </Wrap>,
 });
 

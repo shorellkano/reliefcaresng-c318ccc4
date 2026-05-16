@@ -21,7 +21,7 @@ export const Route = createFileRoute("/privacy")({
     <H>Sharing with third parties</H>
     <p>We share information only with vetted partners who help us deliver our services (for example, background-check providers) and where required by law.</p>
     <H>Your rights</H>
-    <p>Under Nigerian law you may request access to, correction or deletion of your personal data, and you may withdraw consent at any time. Reach us at info@reliefcaresupport.com or +234 909 033 6443.</p>
+    <p>Under Nigerian law you may request access to, correction or deletion of your personal data, and you may withdraw consent at any time. Reach us at info@reliefcaresupport.com.ng or +234 909 033 6443.</p>
   </Legal>,
 });
 
