@@ -84,7 +84,7 @@ function Contact() {
                 <li className="flex gap-3"><MapPin className="h-5 w-5 text-amber shrink-0 mt-0.5" /><span>Suite 12 Veteran Plaza, Herbert Macaulay Way, By YABATECH Back Gate Staff Quarters, Lagos State.</span></li>
                 <li className="flex gap-3"><Phone className="h-5 w-5 text-amber" /><a href="tel:+2349090336443">+234 909 033 6443</a></li>
                 <li className="flex gap-3"><MessageCircle className="h-5 w-5 text-amber" /><a href="https://wa.me/2349090336443" target="_blank" rel="noopener noreferrer">WhatsApp +234 909 033 6443</a></li>
-                <li className="flex gap-3"><Mail className="h-5 w-5 text-amber" /><a href="mailto:info@reliefcaresupport.com">info@reliefcaresupport.com</a></li>
+                <li className="flex gap-3"><Mail className="h-5 w-5 text-amber" /><a href="mailto:info@reliefcaresupport.com.ng">info@reliefcaresupport.com.ng</a></li>
                 <li className="flex gap-3"><Instagram className="h-5 w-5 text-amber" /><a href="https://www.instagram.com/reliefcaredomestic" target="_blank" rel="noopener noreferrer">@reliefcaredomestic</a></li>
                 <li className="flex gap-3"><Instagram className="h-5 w-5 text-amber" /><a href="https://www.instagram.com/reliefcaresupport" target="_blank" rel="noopener noreferrer">@reliefcaresupport</a></li>
               </ul>
