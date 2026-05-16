@@ -179,3 +179,91 @@ function Index() {
     </Layout>
   );
 }
+
+const ROTATING_WORDS = ["Trusted.", "Vetted.", "Trained.", "Caring."];
+
+function KineticSeal() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI((p) => (p + 1) % ROTATING_WORDS.length), 1800);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className="flex items-center gap-5">
+      {/* Rotating circular seal */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.6, rotate: -90 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        className="relative h-24 w-24 sm:h-28 sm:w-28 shrink-0"
+      >
+        <motion.svg
+          viewBox="0 0 120 120"
+          className="absolute inset-0 h-full w-full text-primary"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 18, ease: "linear", repeat: Infinity }}
+        >
+          <defs>
+            <path id="sealCircle" d="M 60,60 m -46,0 a 46,46 0 1,1 92,0 a 46,46 0 1,1 -92,0" />
+          </defs>
+          <text className="fill-current font-bold" style={{ fontSize: 11, letterSpacing: 4 }}>
+            <textPath href="#sealCircle" startOffset="0">
+              RELIEF CARE • HANDS YOU CAN TRUST • SINCE 2026 •
+            </textPath>
+          </text>
+        </motion.svg>
+        {/* dashed inner ring */}
+        <motion.div
+          className="absolute inset-3 rounded-full border-2 border-dashed border-amber/70"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 22, ease: "linear", repeat: Infinity }}
+        />
+        {/* center medallion */}
+        <div className="absolute inset-[26%] rounded-full bg-gradient-to-br from-amber to-orange grid place-items-center shadow-[0_8px_22px_-8px_oklch(0.66_0.16_50/.7)]">
+          <motion.div
+            animate={{ scale: [1, 1.18, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <HandHeart className="h-6 w-6 text-primary" />
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Kinetic word swap */}
+      <div className="flex flex-col leading-none">
+        <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.32em] text-orange">
+          Hands that are
+        </span>
+        <div className="relative h-10 sm:h-12 overflow-hidden mt-2 min-w-[160px]">
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={ROTATING_WORDS[i]}
+              initial={{ y: "100%", opacity: 0, filter: "blur(8px)" }}
+              animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+              exit={{ y: "-100%", opacity: 0, filter: "blur(8px)" }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 font-display italic text-3xl sm:text-4xl text-primary"
+            >
+              {ROTATING_WORDS[i]}
+            </motion.span>
+          </AnimatePresence>
+          {/* hand-drawn underline */}
+          <svg className="absolute -bottom-1 left-0 w-full h-3 text-amber" viewBox="0 0 200 12" preserveAspectRatio="none">
+            <motion.path
+              d="M2 8 Q 50 2, 100 7 T 198 5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" }}
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
