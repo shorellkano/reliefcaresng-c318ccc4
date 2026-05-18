@@ -9,21 +9,43 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkPlansRouteImport } from './routes/work-plans'
+import { Route as VacanciesRouteImport } from './routes/vacancies'
+import { Route as TrainingRouteImport } from './routes/training'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StaffRouteImport } from './routes/staff'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PayRouteImport } from './routes/pay'
 import { Route as HireRouteImport } from './routes/hire'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CandidatesRouteImport } from './routes/candidates'
 import { Route as ApplyRouteImport } from './routes/apply'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StaffIdRouteImport } from './routes/staff.$id'
+import { Route as CandidatesIdRouteImport } from './routes/candidates.$id'
 
+const WorkPlansRoute = WorkPlansRouteImport.update({
+  id: '/work-plans',
+  path: '/work-plans',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VacanciesRoute = VacanciesRouteImport.update({
+  id: '/vacancies',
+  path: '/vacancies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrainingRoute = TrainingRouteImport.update({
+  id: '/training',
+  path: '/training',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestimonialsRoute = TestimonialsRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -54,9 +76,19 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PayRoute = PayRouteImport.update({
+  id: '/pay',
+  path: '/pay',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HireRoute = HireRouteImport.update({
   id: '/hire',
   path: '/hire',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CookiesRoute = CookiesRouteImport.update({
@@ -67,6 +99,11 @@ const CookiesRoute = CookiesRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CandidatesRoute = CandidatesRouteImport.update({
+  id: '/candidates',
+  path: '/candidates',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApplyRoute = ApplyRouteImport.update({
@@ -94,21 +131,33 @@ const StaffIdRoute = StaffIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => StaffRoute,
 } as any)
+const CandidatesIdRoute = CandidatesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => CandidatesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/apply': typeof ApplyRoute
+  '/candidates': typeof CandidatesRouteWithChildren
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
+  '/faq': typeof FaqRoute
   '/hire': typeof HireRoute
+  '/pay': typeof PayRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/staff': typeof StaffRouteWithChildren
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
+  '/training': typeof TrainingRoute
+  '/vacancies': typeof VacanciesRoute
+  '/work-plans': typeof WorkPlansRoute
+  '/candidates/$id': typeof CandidatesIdRoute
   '/staff/$id': typeof StaffIdRoute
 }
 export interface FileRoutesByTo {
@@ -116,15 +165,22 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/apply': typeof ApplyRoute
+  '/candidates': typeof CandidatesRouteWithChildren
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
+  '/faq': typeof FaqRoute
   '/hire': typeof HireRoute
+  '/pay': typeof PayRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/staff': typeof StaffRouteWithChildren
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
+  '/training': typeof TrainingRoute
+  '/vacancies': typeof VacanciesRoute
+  '/work-plans': typeof WorkPlansRoute
+  '/candidates/$id': typeof CandidatesIdRoute
   '/staff/$id': typeof StaffIdRoute
 }
 export interface FileRoutesById {
@@ -133,15 +189,22 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/apply': typeof ApplyRoute
+  '/candidates': typeof CandidatesRouteWithChildren
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
+  '/faq': typeof FaqRoute
   '/hire': typeof HireRoute
+  '/pay': typeof PayRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/staff': typeof StaffRouteWithChildren
   '/terms': typeof TermsRoute
   '/testimonials': typeof TestimonialsRoute
+  '/training': typeof TrainingRoute
+  '/vacancies': typeof VacanciesRoute
+  '/work-plans': typeof WorkPlansRoute
+  '/candidates/$id': typeof CandidatesIdRoute
   '/staff/$id': typeof StaffIdRoute
 }
 export interface FileRouteTypes {
@@ -151,15 +214,22 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/apply'
+    | '/candidates'
     | '/contact'
     | '/cookies'
+    | '/faq'
     | '/hire'
+    | '/pay'
     | '/privacy'
     | '/services'
     | '/sitemap.xml'
     | '/staff'
     | '/terms'
     | '/testimonials'
+    | '/training'
+    | '/vacancies'
+    | '/work-plans'
+    | '/candidates/$id'
     | '/staff/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -167,15 +237,22 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/apply'
+    | '/candidates'
     | '/contact'
     | '/cookies'
+    | '/faq'
     | '/hire'
+    | '/pay'
     | '/privacy'
     | '/services'
     | '/sitemap.xml'
     | '/staff'
     | '/terms'
     | '/testimonials'
+    | '/training'
+    | '/vacancies'
+    | '/work-plans'
+    | '/candidates/$id'
     | '/staff/$id'
   id:
     | '__root__'
@@ -183,15 +260,22 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/apply'
+    | '/candidates'
     | '/contact'
     | '/cookies'
+    | '/faq'
     | '/hire'
+    | '/pay'
     | '/privacy'
     | '/services'
     | '/sitemap.xml'
     | '/staff'
     | '/terms'
     | '/testimonials'
+    | '/training'
+    | '/vacancies'
+    | '/work-plans'
+    | '/candidates/$id'
     | '/staff/$id'
   fileRoutesById: FileRoutesById
 }
@@ -200,19 +284,46 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   ApplyRoute: typeof ApplyRoute
+  CandidatesRoute: typeof CandidatesRouteWithChildren
   ContactRoute: typeof ContactRoute
   CookiesRoute: typeof CookiesRoute
+  FaqRoute: typeof FaqRoute
   HireRoute: typeof HireRoute
+  PayRoute: typeof PayRoute
   PrivacyRoute: typeof PrivacyRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StaffRoute: typeof StaffRouteWithChildren
   TermsRoute: typeof TermsRoute
   TestimonialsRoute: typeof TestimonialsRoute
+  TrainingRoute: typeof TrainingRoute
+  VacanciesRoute: typeof VacanciesRoute
+  WorkPlansRoute: typeof WorkPlansRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/work-plans': {
+      id: '/work-plans'
+      path: '/work-plans'
+      fullPath: '/work-plans'
+      preLoaderRoute: typeof WorkPlansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vacancies': {
+      id: '/vacancies'
+      path: '/vacancies'
+      fullPath: '/vacancies'
+      preLoaderRoute: typeof VacanciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/training': {
+      id: '/training'
+      path: '/training'
+      fullPath: '/training'
+      preLoaderRoute: typeof TrainingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/testimonials': {
       id: '/testimonials'
       path: '/testimonials'
@@ -255,11 +366,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pay': {
+      id: '/pay'
+      path: '/pay'
+      fullPath: '/pay'
+      preLoaderRoute: typeof PayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/hire': {
       id: '/hire'
       path: '/hire'
       fullPath: '/hire'
       preLoaderRoute: typeof HireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cookies': {
@@ -274,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/candidates': {
+      id: '/candidates'
+      path: '/candidates'
+      fullPath: '/candidates'
+      preLoaderRoute: typeof CandidatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/apply': {
@@ -311,8 +443,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StaffIdRouteImport
       parentRoute: typeof StaffRoute
     }
+    '/candidates/$id': {
+      id: '/candidates/$id'
+      path: '/$id'
+      fullPath: '/candidates/$id'
+      preLoaderRoute: typeof CandidatesIdRouteImport
+      parentRoute: typeof CandidatesRoute
+    }
   }
 }
+
+interface CandidatesRouteChildren {
+  CandidatesIdRoute: typeof CandidatesIdRoute
+}
+
+const CandidatesRouteChildren: CandidatesRouteChildren = {
+  CandidatesIdRoute: CandidatesIdRoute,
+}
+
+const CandidatesRouteWithChildren = CandidatesRoute._addFileChildren(
+  CandidatesRouteChildren,
+)
 
 interface StaffRouteChildren {
   StaffIdRoute: typeof StaffIdRoute
@@ -329,15 +480,21 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   ApplyRoute: ApplyRoute,
+  CandidatesRoute: CandidatesRouteWithChildren,
   ContactRoute: ContactRoute,
   CookiesRoute: CookiesRoute,
+  FaqRoute: FaqRoute,
   HireRoute: HireRoute,
+  PayRoute: PayRoute,
   PrivacyRoute: PrivacyRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StaffRoute: StaffRouteWithChildren,
   TermsRoute: TermsRoute,
   TestimonialsRoute: TestimonialsRoute,
+  TrainingRoute: TrainingRoute,
+  VacanciesRoute: VacanciesRoute,
+  WorkPlansRoute: WorkPlansRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
