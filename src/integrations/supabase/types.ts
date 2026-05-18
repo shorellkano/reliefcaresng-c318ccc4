@@ -14,6 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
+      adverts: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          link_url: string | null
+          title: string
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description: string
+          display_order?: number
+          id?: string
+          link_url?: string | null
+          title: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          link_url?: string | null
+          title?: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
+      candidates: {
+        Row: {
+          available: boolean
+          bio: string | null
+          created_at: string
+          display_order: number
+          full_name: string
+          id: string
+          job_role: string
+          languages: string | null
+          location: string | null
+          photo_url: string | null
+          preferred_job_type: string | null
+          skills: string | null
+          updated_at: string
+          years_experience: number | null
+        }
+        Insert: {
+          available?: boolean
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          full_name: string
+          id?: string
+          job_role: string
+          languages?: string | null
+          location?: string | null
+          photo_url?: string | null
+          preferred_job_type?: string | null
+          skills?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Update: {
+          available?: boolean
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          full_name?: string
+          id?: string
+          job_role?: string
+          languages?: string | null
+          location?: string | null
+          photo_url?: string | null
+          preferred_job_type?: string | null
+          skills?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -206,6 +293,36 @@ export type Database = {
         }
         Relationships: []
       }
+      training_enquiries: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          message: string | null
+          phone: string
+          program: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          message?: string | null
+          phone: string
+          program?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          message?: string | null
+          phone?: string
+          program?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -224,6 +341,51 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vacancies: {
+        Row: {
+          accommodation: boolean
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          location: string
+          requirements: string | null
+          salary: string | null
+          status: string
+          title: string
+          updated_at: string
+          work_type: string
+        }
+        Insert: {
+          accommodation?: boolean
+          created_at?: string
+          description: string
+          display_order?: number
+          id?: string
+          location: string
+          requirements?: string | null
+          salary?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          work_type: string
+        }
+        Update: {
+          accommodation?: boolean
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          location?: string
+          requirements?: string | null
+          salary?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          work_type?: string
         }
         Relationships: []
       }
