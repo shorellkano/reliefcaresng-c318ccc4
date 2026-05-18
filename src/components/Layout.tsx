@@ -1,23 +1,44 @@
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, Instagram, Phone, MapPin, Mail, ArrowLeft, Lock } from "lucide-react";
+import { Menu, X, Instagram, Phone, MapPin, Mail, ArrowLeft, Lock, ChevronDown } from "lucide-react";
 import logo from "@/assets/logo.jpg";
 import { WhatsAppWidget } from "./WhatsAppWidget";
 
-const NAV = [
+type NavItem = { to: string; label: string };
+type NavGroup = { label: string; items: NavItem[] };
+
+const NAV: (NavItem | NavGroup)[] = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About Us" },
-  { to: "/services", label: "Our Services" },
-  { to: "/apply", label: "Apply for a Job" },
-  { to: "/hire", label: "Hire a Worker" },
+  { to: "/services", label: "Services" },
+  {
+    label: "For Clients",
+    items: [
+      { to: "/hire", label: "Hire a Worker" },
+      { to: "/candidates", label: "Available Candidates" },
+      { to: "/work-plans", label: "Work Plans" },
+      { to: "/pay", label: "Pay Now" },
+    ],
+  },
+  {
+    label: "For Job Seekers",
+    items: [
+      { to: "/apply", label: "Apply for a Job" },
+      { to: "/vacancies", label: "Vacancies" },
+      { to: "/training", label: "Training" },
+    ],
+  },
   { to: "/staff", label: "Our People" },
-  { to: "/testimonials", label: "Testimonials" },
+  { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
-] as const;
+];
+
+function isGroup(n: NavItem | NavGroup): n is NavGroup { return "items" in n; }
 
 export function Layout({ children, hideWhatsApp = false }: { children: React.ReactNode; hideWhatsApp?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -29,7 +50,7 @@ export function Layout({ children, hideWhatsApp = false }: { children: React.Rea
   }, []);
 
   useEffect(() => {
-    const unsub = router.subscribe("onResolved", () => setOpen(false));
+    const unsub = router.subscribe("onResolved", () => { setOpen(false); setOpenGroup(null); });
     return unsub;
   }, [router]);
 
@@ -55,13 +76,32 @@ export function Layout({ children, hideWhatsApp = false }: { children: React.Rea
               Relief Care<br/><span className="text-xs tracking-widest text-orange uppercase">Support Services</span>
             </span>
           </Link>
-          <nav className="hidden lg:flex items-center gap-6 text-sm">
-            {NAV.map((n) => (
-              <Link key={n.to} to={n.to} className="text-foreground/80 hover:text-primary font-semibold"
-                activeProps={{ className: "text-primary" }}>
-                {n.label}
-              </Link>
-            ))}
+          <nav className="hidden lg:flex items-center gap-5 text-sm">
+            {NAV.map((n) =>
+              isGroup(n) ? (
+                <div key={n.label} className="relative group">
+                  <button className="inline-flex items-center gap-1 text-foreground/80 hover:text-primary font-semibold">
+                    {n.label} <ChevronDown className="h-3.5 w-3.5" />
+                  </button>
+                  <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
+                    <div className="bg-card rounded-2xl shadow-2xl border border-border p-2 min-w-[220px]">
+                      {n.items.map((i) => (
+                        <Link key={i.to} to={i.to}
+                          className="block px-3 py-2 rounded-lg text-sm font-semibold text-foreground/80 hover:bg-cream hover:text-primary"
+                          activeProps={{ className: "bg-cream text-primary" }}>
+                          {i.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link key={n.to} to={n.to} className="text-foreground/80 hover:text-primary font-semibold"
+                  activeProps={{ className: "text-primary" }}>
+                  {n.label}
+                </Link>
+              )
+            )}
           </nav>
           <div className="hidden lg:flex items-center gap-3">
             <a href="https://www.instagram.com/reliefcaresupport" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-orange">
@@ -76,14 +116,34 @@ export function Layout({ children, hideWhatsApp = false }: { children: React.Rea
           </button>
         </div>
         {open && (
-          <div className="lg:hidden bg-ivory border-t border-border">
+          <div className="lg:hidden bg-ivory border-t border-border max-h-[80vh] overflow-y-auto">
             <div className="px-4 py-4 flex flex-col gap-1">
-              {NAV.map((n) => (
-                <Link key={n.to} to={n.to} className="px-3 py-3 rounded-md text-foreground/90 font-semibold hover:bg-cream"
-                  activeProps={{ className: "bg-cream text-primary" }}>
-                  {n.label}
-                </Link>
-              ))}
+              {NAV.map((n) =>
+                isGroup(n) ? (
+                  <div key={n.label}>
+                    <button onClick={() => setOpenGroup(openGroup === n.label ? null : n.label)}
+                      className="w-full flex items-center justify-between px-3 py-3 rounded-md text-foreground/90 font-semibold hover:bg-cream">
+                      {n.label}
+                      <ChevronDown className={`h-4 w-4 transition ${openGroup === n.label ? "rotate-180" : ""}`} />
+                    </button>
+                    {openGroup === n.label && (
+                      <div className="pl-4 border-l-2 border-amber ml-3">
+                        {n.items.map((i) => (
+                          <Link key={i.to} to={i.to} className="block px-3 py-2 rounded-md text-sm text-foreground/80 hover:bg-cream hover:text-primary"
+                            activeProps={{ className: "bg-cream text-primary" }}>
+                            {i.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link key={n.to} to={n.to} className="px-3 py-3 rounded-md text-foreground/90 font-semibold hover:bg-cream"
+                    activeProps={{ className: "bg-cream text-primary" }}>
+                    {n.label}
+                  </Link>
+                )
+              )}
               <Link to="/hire" className="mt-2 rounded-full bg-amber text-center px-4 py-3 font-bold text-amber-foreground">
                 Get Help Now
               </Link>
@@ -115,8 +175,8 @@ export function Layout({ children, hideWhatsApp = false }: { children: React.Rea
 function Footer() {
   return (
     <footer className="mt-24 bg-deep-blue text-primary-foreground">
-      <div className="max-w-7xl mx-auto px-6 py-16 grid gap-10 md:grid-cols-4">
-        <div>
+      <div className="max-w-7xl mx-auto px-6 py-16 grid gap-10 md:grid-cols-2 lg:grid-cols-5">
+        <div className="lg:col-span-1">
           <Link to="/" className="flex items-center gap-3" aria-label="Go to home">
             <img src={logo} alt="" className="h-12 w-12 rounded-full" />
             <div>
@@ -127,27 +187,32 @@ function Footer() {
           <p className="mt-4 text-sm text-primary-foreground/80 italic">Lets give you a helping hand.</p>
         </div>
         <div>
-          <p className="font-display text-amber mb-3">Quick Links</p>
+          <p className="font-display text-amber mb-3">For Clients</p>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/" className="hover:text-amber">Home</Link></li>
-            <li><Link to="/about" className="hover:text-amber">About Us</Link></li>
-            <li><Link to="/services" className="hover:text-amber">Services</Link></li>
-            <li><Link to="/staff" className="hover:text-amber">Our People</Link></li>
-            <li><Link to="/testimonials" className="hover:text-amber">Testimonials</Link></li>
-            <li><Link to="/contact" className="hover:text-amber">Contact</Link></li>
+            <li><Link to="/hire" className="hover:text-amber">Hire a Worker</Link></li>
+            <li><Link to="/work-plans" className="hover:text-amber">Work Plans</Link></li>
+            <li><Link to="/pay" className="hover:text-amber">Pay Now</Link></li>
+            <li><Link to="/candidates" className="hover:text-amber">Available Candidates</Link></li>
+            <li><Link to="/faq" className="hover:text-amber">FAQ</Link></li>
           </ul>
         </div>
         <div>
-          <p className="font-display text-amber mb-3">Services</p>
+          <p className="font-display text-amber mb-3">For Job Seekers</p>
           <ul className="space-y-2 text-sm">
-            <li>Caregivers</li>
-            <li>Nannies and Babysitters</li>
-            <li>Elderly Care Support</li>
-            <li>Housekeepers</li>
-            <li>Cleaners</li>
-            <li>Cooks</li>
-            <li>Live-in and Live-out Staff</li>
-            <li>General Recruitment</li>
+            <li><Link to="/apply" className="hover:text-amber">Apply for a Job</Link></li>
+            <li><Link to="/vacancies" className="hover:text-amber">Vacancies</Link></li>
+            <li><Link to="/training" className="hover:text-amber">Training</Link></li>
+            <li><Link to="/faq" className="hover:text-amber">FAQ</Link></li>
+          </ul>
+        </div>
+        <div>
+          <p className="font-display text-amber mb-3">Company</p>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/" className="hover:text-amber">Home</Link></li>
+            <li><Link to="/about" className="hover:text-amber">About Us</Link></li>
+            <li><Link to="/services" className="hover:text-amber">Our Services</Link></li>
+            <li><Link to="/staff" className="hover:text-amber">Our People</Link></li>
+            <li><Link to="/testimonials" className="hover:text-amber">Testimonials</Link></li>
           </ul>
         </div>
         <div>

@@ -3,7 +3,9 @@ import type {} from "@tanstack/react-start";
 
 const BASE_URL = "";
 
-const PATHS = ["/", "/about", "/services", "/apply", "/hire", "/staff", "/testimonials", "/contact", "/privacy", "/terms", "/cookies"];
+const PATHS = ["/", "/about", "/services", "/apply", "/hire", "/staff", "/testimonials", "/contact",
+  "/vacancies", "/training", "/work-plans", "/faq", "/pay", "/candidates",
+  "/privacy", "/terms", "/cookies"];
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {

@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
-import { Heart, Baby, UserCheck, Sparkles, Brush, ChefHat, Home, Users, ArrowRight } from "lucide-react";
+import { Heart, Baby, UserCheck, Sparkles, Brush, ChefHat, Home, Users, ArrowRight,
+  Bandage, Brain, HandHeart, Activity, Building2, Apple, Footprints, Smile } from "lucide-react";
 
 const search = z.object({ tab: z.enum(["care", "domestic"]).optional().default("care") });
 
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
       { title: "Our Services | Relief Care Support Services" },
-      { name: "description", content: "Care giving and domestic worker recruitment across Nigeria. Caregivers, nannies, elderly care, housekeepers, cleaners, cooks, live-in and live-out staff." },
+      { name: "description", content: "Caregivers, nannies, elderly care, wound care, palliative care, hospital sitting, housekeepers, cleaners, cooks and domestic staff across Nigeria." },
       { property: "og:title", content: "Our Services | Relief Care Support Services" },
       { property: "og:description", content: "Care giving and domestic staffing services across Nigeria." },
       { property: "og:url", content: "/services" },
@@ -24,6 +25,14 @@ const CARE = [
   { icon: UserCheck, title: "Caregivers", desc: "Trained professionals who attend to personal care, hygiene, and companionship in your home.", tone: "blue" },
   { icon: Baby, title: "Nannies and Babysitters", desc: "Loving, screened nannies for newborns, toddlers and older children.", tone: "amber" },
   { icon: Heart, title: "Elderly Care Support", desc: "Patient, kind support for older loved ones who deserve dignity and warmth.", tone: "orange" },
+  { icon: Bandage, title: "Wound Care", desc: "Trained attendants for dressing, hygiene and monitoring of healing wounds at home.", tone: "blue" },
+  { icon: Brain, title: "Counseling and Therapy", desc: "Compassionate emotional support and structured therapy sessions for individuals and families.", tone: "amber" },
+  { icon: HandHeart, title: "Palliative Care", desc: "Dignified, gentle care for patients managing serious illness, focused on comfort and presence.", tone: "orange" },
+  { icon: Activity, title: "Physical Therapy Assistance", desc: "Support with mobility exercises and recovery routines under professional guidance.", tone: "blue" },
+  { icon: Building2, title: "Hospital Sitting", desc: "Reliable companions for hospital stays, helping with daily needs and family updates.", tone: "amber" },
+  { icon: Apple, title: "Nutrition and Meal Planning", desc: "Thoughtful, balanced meal plans tailored to medical needs and personal preferences.", tone: "orange" },
+  { icon: Footprints, title: "Errands and Escort", desc: "Trusted help with shopping, appointments and accompanied outings for safety and ease.", tone: "blue" },
+  { icon: Smile, title: "Childcare Basics", desc: "Foundational childcare support including feeding, play and routine management.", tone: "amber" },
 ];
 const DOM = [
   { icon: Sparkles, title: "Housekeepers", desc: "Reliable housekeepers who keep your home running with care and discretion.", tone: "blue" },
@@ -82,6 +91,12 @@ function Services() {
                 </Link>
               </article>
             ))}
+          </div>
+
+          <div className="mt-16 text-center reveal">
+            <Link to="/work-plans" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-7 py-3.5 font-bold shadow hover:shadow-xl transition">
+              See our work plans <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
