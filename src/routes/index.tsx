@@ -199,7 +199,7 @@ function Index() {
               {candidates.slice(0,4).map((c) => (
                 <Link key={c.id} to="/candidates/$id" params={{ id: c.id }} className="reveal group bg-card rounded-3xl shadow hover:shadow-xl transition overflow-hidden">
                   <div className="aspect-[4/5] overflow-hidden bg-muted relative">
-                    {c.photo_url ? <img src={c.photo_url} alt={c.full_name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-700" /> : <div className="w-full h-full grid place-items-center text-muted-foreground text-xs">No photo</div>}
+                    {c.photo_url ? <img src={c.photo_url} alt={c.full_name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-700" /> : <div className="w-full h-full grid place-items-center bg-gradient-to-br from-orange/30 via-amber/30 to-primary/30 text-primary font-display text-5xl">{c.full_name.split(" ").map(n=>n[0]).slice(0,2).join("")}</div>}
                     <span className={`absolute top-3 left-3 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full ${c.available ? "bg-[oklch(0.85_0.12_150)] text-[oklch(0.30_0.12_150)]" : "bg-amber/80 text-amber-foreground"}`}>
                       {c.available ? "Available" : "Placed"}
                     </span>
