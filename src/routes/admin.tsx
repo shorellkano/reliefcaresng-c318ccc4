@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Pencil, Trash2, LogOut, Save, X, Mail, Briefcase, MessageSquare, Users } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Save, X, Mail, Briefcase, MessageSquare, Users, Megaphone, GraduationCap, UserCheck } from "lucide-react";
 
 const ADMIN_EMAIL = "reliefcare@zohomail.com";
 
