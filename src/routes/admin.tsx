@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Pencil, Trash2, LogOut, Save, X, Mail, Briefcase, MessageSquare, Users } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Save, X, Mail, Briefcase, MessageSquare, Users, Megaphone, GraduationCap, UserCheck } from "lucide-react";
 
 const ADMIN_EMAIL = "reliefcare@zohomail.com";
 
@@ -129,7 +129,7 @@ function Admin() {
   return <AdminPanel />;
 }
 
-type Tab = "hire" | "apply" | "contact" | "staff";
+type Tab = "hire" | "apply" | "contact" | "staff" | "adverts" | "vacancies" | "candidates" | "training";
 
 function AdminPanel() {
   const [tab, setTab] = useState<Tab>("hire");
@@ -141,7 +141,7 @@ function AdminPanel() {
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
               <h1 className="font-display text-4xl text-primary">Admin Dashboard</h1>
-              <p className="text-sm text-muted-foreground">All form submissions and staff management.</p>
+              <p className="text-sm text-muted-foreground">All form submissions and content management.</p>
             </div>
             <button onClick={() => supabase.auth.signOut()} className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-bold">
               <LogOut className="h-4 w-4" /> Sign out
@@ -150,16 +150,24 @@ function AdminPanel() {
 
           <div className="mt-6 flex flex-wrap gap-2 border-b border-border">
             <TabBtn active={tab === "hire"} onClick={() => setTab("hire")} icon={<Briefcase className="h-4 w-4" />}>Hire requests</TabBtn>
-            <TabBtn active={tab === "apply"} onClick={() => setTab("apply")} icon={<Mail className="h-4 w-4" />}>Job applications</TabBtn>
-            <TabBtn active={tab === "contact"} onClick={() => setTab("contact")} icon={<MessageSquare className="h-4 w-4" />}>Contact messages</TabBtn>
+            <TabBtn active={tab === "apply"} onClick={() => setTab("apply")} icon={<Mail className="h-4 w-4" />}>Applications</TabBtn>
+            <TabBtn active={tab === "contact"} onClick={() => setTab("contact")} icon={<MessageSquare className="h-4 w-4" />}>Messages</TabBtn>
+            <TabBtn active={tab === "training"} onClick={() => setTab("training")} icon={<GraduationCap className="h-4 w-4" />}>Training</TabBtn>
             <TabBtn active={tab === "staff"} onClick={() => setTab("staff")} icon={<Users className="h-4 w-4" />}>Staff</TabBtn>
+            <TabBtn active={tab === "candidates"} onClick={() => setTab("candidates")} icon={<UserCheck className="h-4 w-4" />}>Candidates</TabBtn>
+            <TabBtn active={tab === "vacancies"} onClick={() => setTab("vacancies")} icon={<Briefcase className="h-4 w-4" />}>Vacancies</TabBtn>
+            <TabBtn active={tab === "adverts"} onClick={() => setTab("adverts")} icon={<Megaphone className="h-4 w-4" />}>Adverts</TabBtn>
           </div>
 
           <div className="mt-6">
             {tab === "hire" && <HireList />}
             {tab === "apply" && <ApplyList />}
             {tab === "contact" && <ContactList />}
+            {tab === "training" && <TrainingList />}
             {tab === "staff" && <StaffManager />}
+            {tab === "candidates" && <CandidatesManager />}
+            {tab === "vacancies" && <VacanciesManager />}
+            {tab === "adverts" && <AdvertsManager />}
           </div>
         </div>
       </section>
@@ -403,5 +411,309 @@ function Textarea(p: { label: string; value: string; onChange: (v: string) => vo
       <textarea rows={p.rows ?? 2} value={p.value} onChange={(e) => p.onChange(e.target.value)}
         className="w-full rounded-lg border border-border bg-input/40 px-3 py-2 text-sm" />
     </label>
+  );
+}
+
+/* ---------- Training enquiries ---------- */
+function TrainingList() {
+  const [rows, setRows] = useState<any[]>([]);
+  useEffect(() => { supabase.from("training_enquiries").select("*").order("created_at", { ascending: false }).then(({ data }) => setRows(data ?? [])); }, []);
+  return (
+    <div className="space-y-3">
+      {rows.length === 0 && <Empty label="No training enquiries yet." />}
+      {rows.map((r) => (
+        <div key={r.id} className="bg-card rounded-xl shadow-sm p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="font-bold text-primary">{r.full_name} <span className="text-xs font-normal text-muted-foreground">· {r.program ?? "General"}</span></p>
+              <p className="text-xs text-muted-foreground">{r.email} · {r.phone}</p>
+            </div>
+            <span className="text-xs text-muted-foreground">{fmtDate(r.created_at)}</span>
+          </div>
+          {r.message && <p className="mt-2 text-sm whitespace-pre-wrap text-foreground/85">{r.message}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ---------- Adverts manager ---------- */
+type Advert = { id: string; category: string; title: string; description: string; link_url: string | null; visible: boolean; display_order: number };
+const EMPTY_AD: Omit<Advert, "id"> = { category: "COMPANY NEWS", title: "", description: "", link_url: "", visible: true, display_order: 0 };
+
+function AdvertsManager() {
+  const [list, setList] = useState<Advert[]>([]);
+  const [editing, setEditing] = useState<(Omit<Advert, "id"> & { id?: string }) | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function load() {
+    const { data } = await supabase.from("adverts").select("*").order("display_order");
+    setList((data ?? []) as Advert[]);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function save() {
+    if (!editing) return;
+    setBusy(true);
+    const { id, ...rest } = editing;
+    const res = id ? await supabase.from("adverts").update(rest).eq("id", id) : await supabase.from("adverts").insert(rest);
+    setBusy(false);
+    if (res.error) return alert(res.error.message);
+    setEditing(null); load();
+  }
+  async function remove(id: string) {
+    if (!confirm("Delete this advert?")) return;
+    const { error } = await supabase.from("adverts").delete().eq("id", id);
+    if (error) return alert(error.message); load();
+  }
+  async function toggle(a: Advert) {
+    await supabase.from("adverts").update({ visible: !a.visible }).eq("id", a.id); load();
+  }
+
+  return (
+    <div>
+      <div className="flex justify-end mb-4">
+        <button onClick={() => setEditing({ ...EMPTY_AD })} className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 font-bold">
+          <Plus className="h-4 w-4" /> New advert
+        </button>
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
+        {list.map((a) => (
+          <div key={a.id} className="bg-card rounded-2xl shadow p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <span className="text-[10px] font-bold tracking-widest uppercase bg-amber/30 text-orange px-2 py-0.5 rounded-full">{a.category}</span>
+                <p className="font-display text-lg text-primary mt-2">{a.title}</p>
+                <p className="text-sm text-foreground/75 mt-1">{a.description}</p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button onClick={() => setEditing({ ...a })} className="text-primary"><Pencil className="h-4 w-4" /></button>
+                <button onClick={() => remove(a.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></button>
+              </div>
+            </div>
+            <button onClick={() => toggle(a)} className={`mt-3 text-xs px-2 py-0.5 rounded-full ${a.visible ? "bg-amber text-amber-foreground" : "bg-muted text-foreground"}`}>
+              {a.visible ? "Visible" : "Hidden"}
+            </button>
+          </div>
+        ))}
+      </div>
+      {editing && (
+        <Modal title={editing.id ? "Edit advert" : "New advert"} onClose={() => setEditing(null)}>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input label="Category" value={editing.category} onChange={(v) => setEditing({ ...editing, category: v })} />
+            <Input label="Display Order" type="number" value={String(editing.display_order)} onChange={(v) => setEditing({ ...editing, display_order: Number(v) || 0 })} />
+            <div className="sm:col-span-2"><Input label="Title" value={editing.title} onChange={(v) => setEditing({ ...editing, title: v })} /></div>
+            <div className="sm:col-span-2"><Input label="Link URL (optional)" value={editing.link_url ?? ""} onChange={(v) => setEditing({ ...editing, link_url: v })} /></div>
+          </div>
+          <Textarea label="Description" rows={4} value={editing.description} onChange={(v) => setEditing({ ...editing, description: v })} />
+          <label className="mt-4 inline-flex items-center gap-2">
+            <input type="checkbox" checked={editing.visible} onChange={(e) => setEditing({ ...editing, visible: e.target.checked })} className="accent-primary" />
+            <span className="text-sm font-semibold">Visible on home page</span>
+          </label>
+          <ModalActions onCancel={() => setEditing(null)} onSave={save} busy={busy} />
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Vacancies manager ---------- */
+type Vacancy = { id: string; title: string; location: string; work_type: string; salary: string | null; accommodation: boolean; description: string; requirements: string | null; status: string; display_order: number };
+const EMPTY_VAC: Omit<Vacancy, "id"> = { title: "", location: "", work_type: "Live-in", salary: "", accommodation: false, description: "", requirements: "", status: "active", display_order: 0 };
+
+function VacanciesManager() {
+  const [list, setList] = useState<Vacancy[]>([]);
+  const [editing, setEditing] = useState<(Omit<Vacancy, "id"> & { id?: string }) | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function load() { const { data } = await supabase.from("vacancies").select("*").order("display_order"); setList((data ?? []) as Vacancy[]); }
+  useEffect(() => { load(); }, []);
+
+  async function save() {
+    if (!editing) return;
+    setBusy(true);
+    const { id, ...rest } = editing;
+    const res = id ? await supabase.from("vacancies").update(rest).eq("id", id) : await supabase.from("vacancies").insert(rest);
+    setBusy(false);
+    if (res.error) return alert(res.error.message);
+    setEditing(null); load();
+  }
+  async function remove(id: string) {
+    if (!confirm("Delete this vacancy?")) return;
+    const { error } = await supabase.from("vacancies").delete().eq("id", id);
+    if (error) return alert(error.message); load();
+  }
+  async function setStatus(v: Vacancy, status: string) {
+    await supabase.from("vacancies").update({ status }).eq("id", v.id); load();
+  }
+
+  return (
+    <div>
+      <div className="flex justify-end mb-4">
+        <button onClick={() => setEditing({ ...EMPTY_VAC })} className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 font-bold">
+          <Plus className="h-4 w-4" /> New vacancy
+        </button>
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
+        {list.map((v) => (
+          <div key={v.id} className="bg-card rounded-2xl shadow p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-display text-lg text-primary">{v.title}</p>
+                <p className="text-xs text-orange font-semibold uppercase tracking-wide">{v.work_type} · {v.location}</p>
+                {v.salary && <p className="text-xs text-muted-foreground mt-1">{v.salary}</p>}
+                <p className="text-sm text-foreground/75 mt-2 line-clamp-3">{v.description}</p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button onClick={() => setEditing({ ...v })} className="text-primary"><Pencil className="h-4 w-4" /></button>
+                <button onClick={() => remove(v.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></button>
+              </div>
+            </div>
+            <div className="mt-3 flex gap-2">
+              {["active", "filled", "closed"].map((s) => (
+                <button key={s} onClick={() => setStatus(v, s)} className={`text-xs px-2.5 py-1 rounded-full font-semibold capitalize ${v.status === s ? "bg-primary text-primary-foreground" : "bg-muted text-foreground hover:bg-amber/40"}`}>{s}</button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {editing && (
+        <Modal title={editing.id ? "Edit vacancy" : "New vacancy"} onClose={() => setEditing(null)}>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input label="Title" value={editing.title} onChange={(v) => setEditing({ ...editing, title: v })} />
+            <Input label="Location" value={editing.location} onChange={(v) => setEditing({ ...editing, location: v })} />
+            <Input label="Work Type" value={editing.work_type} onChange={(v) => setEditing({ ...editing, work_type: v })} />
+            <Input label="Salary" value={editing.salary ?? ""} onChange={(v) => setEditing({ ...editing, salary: v })} />
+            <Input label="Status" value={editing.status} onChange={(v) => setEditing({ ...editing, status: v })} />
+            <Input label="Display Order" type="number" value={String(editing.display_order)} onChange={(v) => setEditing({ ...editing, display_order: Number(v) || 0 })} />
+          </div>
+          <Textarea label="Description" rows={4} value={editing.description} onChange={(v) => setEditing({ ...editing, description: v })} />
+          <Textarea label="Requirements" rows={3} value={editing.requirements ?? ""} onChange={(v) => setEditing({ ...editing, requirements: v })} />
+          <label className="mt-4 inline-flex items-center gap-2">
+            <input type="checkbox" checked={editing.accommodation} onChange={(e) => setEditing({ ...editing, accommodation: e.target.checked })} className="accent-primary" />
+            <span className="text-sm font-semibold">Accommodation provided</span>
+          </label>
+          <ModalActions onCancel={() => setEditing(null)} onSave={save} busy={busy} />
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Candidates manager ---------- */
+type Candidate = { id: string; full_name: string; job_role: string; years_experience: number | null; languages: string | null; location: string | null; preferred_job_type: string | null; skills: string | null; bio: string | null; photo_url: string | null; available: boolean; display_order: number };
+const EMPTY_CAND: Omit<Candidate, "id"> = { full_name: "", job_role: "", years_experience: 0, languages: "", location: "", preferred_job_type: "", skills: "", bio: "", photo_url: "", available: true, display_order: 0 };
+
+function CandidatesManager() {
+  const [list, setList] = useState<Candidate[]>([]);
+  const [editing, setEditing] = useState<(Omit<Candidate, "id"> & { id?: string }) | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function load() { const { data } = await supabase.from("candidates").select("*").order("display_order"); setList((data ?? []) as Candidate[]); }
+  useEffect(() => { load(); }, []);
+
+  async function save() {
+    if (!editing) return;
+    setBusy(true);
+    const { id, ...rest } = editing;
+    const res = id ? await supabase.from("candidates").update(rest).eq("id", id) : await supabase.from("candidates").insert(rest);
+    setBusy(false);
+    if (res.error) return alert(res.error.message);
+    setEditing(null); load();
+  }
+  async function remove(id: string) {
+    if (!confirm("Delete this candidate?")) return;
+    const { error } = await supabase.from("candidates").delete().eq("id", id);
+    if (error) return alert(error.message); load();
+  }
+  async function toggle(c: Candidate) { await supabase.from("candidates").update({ available: !c.available }).eq("id", c.id); load(); }
+
+  async function uploadPhoto(file: File) {
+    const path = `${crypto.randomUUID()}-${file.name}`;
+    const { error } = await supabase.storage.from("staff-photos").upload(path, file, { upsert: true });
+    if (error) { alert(error.message); return; }
+    const { data } = supabase.storage.from("staff-photos").getPublicUrl(path);
+    setEditing((p) => p ? { ...p, photo_url: data.publicUrl } : p);
+  }
+
+  return (
+    <div>
+      <div className="flex justify-end mb-4">
+        <button onClick={() => setEditing({ ...EMPTY_CAND })} className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 font-bold">
+          <Plus className="h-4 w-4" /> New candidate
+        </button>
+      </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {list.map((c) => (
+          <div key={c.id} className="bg-card rounded-2xl shadow p-4 flex gap-4">
+            <img src={c.photo_url ?? ""} alt="" className="h-20 w-20 rounded-xl object-cover bg-muted" />
+            <div className="flex-1 min-w-0">
+              <p className="font-display text-lg text-primary truncate">{c.full_name}</p>
+              <p className="text-xs text-orange font-semibold">{c.job_role}</p>
+              <p className="text-xs text-muted-foreground">{c.years_experience ?? 0} yrs · {c.location ?? "—"}</p>
+              <button onClick={() => toggle(c)} className={`mt-1 text-xs px-2 py-0.5 rounded-full ${c.available ? "bg-[oklch(0.85_0.12_150)] text-[oklch(0.30_0.12_150)]" : "bg-muted text-foreground"}`}>
+                {c.available ? "Available" : "Placed"}
+              </button>
+              <div className="mt-2 flex gap-2">
+                <button onClick={() => setEditing({ ...c })} className="text-primary"><Pencil className="h-4 w-4" /></button>
+                <button onClick={() => remove(c.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {editing && (
+        <Modal title={editing.id ? "Edit candidate" : "New candidate"} onClose={() => setEditing(null)}>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input label="Full Name" value={editing.full_name} onChange={(v) => setEditing({ ...editing, full_name: v })} />
+            <Input label="Job Role" value={editing.job_role} onChange={(v) => setEditing({ ...editing, job_role: v })} />
+            <Input label="Years of Experience" type="number" value={String(editing.years_experience ?? "")} onChange={(v) => setEditing({ ...editing, years_experience: v ? Number(v) : null })} />
+            <Input label="Location" value={editing.location ?? ""} onChange={(v) => setEditing({ ...editing, location: v })} />
+            <Input label="Languages" value={editing.languages ?? ""} onChange={(v) => setEditing({ ...editing, languages: v })} />
+            <Input label="Preferred Job Type" value={editing.preferred_job_type ?? ""} onChange={(v) => setEditing({ ...editing, preferred_job_type: v })} />
+            <Input label="Display Order" type="number" value={String(editing.display_order)} onChange={(v) => setEditing({ ...editing, display_order: Number(v) || 0 })} />
+          </div>
+          <Textarea label="Skills (comma separated)" value={editing.skills ?? ""} onChange={(v) => setEditing({ ...editing, skills: v })} />
+          <Textarea label="Bio" rows={4} value={editing.bio ?? ""} onChange={(v) => setEditing({ ...editing, bio: v })} />
+          <div className="mt-4">
+            <label className="block text-sm font-bold text-primary mb-1">Photo</label>
+            {editing.photo_url && <img src={editing.photo_url} alt="" className="h-24 w-24 rounded-lg object-cover mb-2" />}
+            <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadPhoto(e.target.files[0])} />
+            <input type="text" value={editing.photo_url ?? ""} onChange={(e) => setEditing({ ...editing, photo_url: e.target.value })}
+              placeholder="Or paste photo URL" className="mt-2 w-full rounded-lg border border-border bg-input/40 px-3 py-2 text-sm" />
+          </div>
+          <label className="mt-4 inline-flex items-center gap-2">
+            <input type="checkbox" checked={editing.available} onChange={(e) => setEditing({ ...editing, available: e.target.checked })} className="accent-primary" />
+            <span className="text-sm font-semibold">Available now</span>
+          </label>
+          <ModalActions onCancel={() => setEditing(null)} onSave={save} busy={busy} />
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Shared modal pieces ---------- */
+function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-start justify-center overflow-y-auto p-4">
+      <div className="bg-card rounded-3xl shadow-2xl max-w-2xl w-full p-6 my-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="font-display text-2xl text-primary">{title}</h2>
+          <button onClick={onClose}><X /></button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+function ModalActions({ onCancel, onSave, busy }: { onCancel: () => void; onSave: () => void; busy: boolean }) {
+  return (
+    <div className="mt-6 flex gap-3 justify-end">
+      <button onClick={onCancel} className="rounded-full px-5 py-2 border border-border font-bold">Cancel</button>
+      <button onClick={onSave} disabled={busy} className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2 font-bold">
+        <Save className="h-4 w-4" /> {busy ? "Saving..." : "Save"}
+      </button>
+    </div>
   );
 }
