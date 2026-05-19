@@ -21,12 +21,20 @@ export const Route = createFileRoute("/")({
 });
 
 type Staff = { id: string; full_name: string; job_role: string; photo_url: string | null; years_experience: number | null };
+type Advert = { id: string; category: string; title: string; description: string; link_url: string | null };
+type Candidate = { id: string; full_name: string; job_role: string; photo_url: string | null; years_experience: number | null; location: string | null; available: boolean };
 
 function Index() {
   const [staff, setStaff] = useState<Staff[]>([]);
+  const [adverts, setAdverts] = useState<Advert[]>([]);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
   useEffect(() => {
     supabase.from("staff_profiles").select("id, full_name, job_role, photo_url, years_experience").order("display_order").limit(6)
       .then(({ data }) => setStaff(data ?? []));
+    supabase.from("adverts").select("id, category, title, description, link_url").eq("visible", true).order("display_order").limit(6)
+      .then(({ data }) => setAdverts(data ?? []));
+    supabase.from("candidates").select("id, full_name, job_role, photo_url, years_experience, location, available").order("display_order").limit(8)
+      .then(({ data }) => setCandidates(data ?? []));
   }, []);
 
   return (
