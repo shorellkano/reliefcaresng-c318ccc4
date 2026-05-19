@@ -129,7 +129,7 @@ function Admin() {
   return <AdminPanel />;
 }
 
-type Tab = "hire" | "apply" | "contact" | "staff";
+type Tab = "hire" | "apply" | "contact" | "staff" | "adverts" | "vacancies" | "candidates" | "training";
 
 function AdminPanel() {
   const [tab, setTab] = useState<Tab>("hire");
@@ -141,7 +141,7 @@ function AdminPanel() {
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
               <h1 className="font-display text-4xl text-primary">Admin Dashboard</h1>
-              <p className="text-sm text-muted-foreground">All form submissions and staff management.</p>
+              <p className="text-sm text-muted-foreground">All form submissions and content management.</p>
             </div>
             <button onClick={() => supabase.auth.signOut()} className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-bold">
               <LogOut className="h-4 w-4" /> Sign out
@@ -150,16 +150,24 @@ function AdminPanel() {
 
           <div className="mt-6 flex flex-wrap gap-2 border-b border-border">
             <TabBtn active={tab === "hire"} onClick={() => setTab("hire")} icon={<Briefcase className="h-4 w-4" />}>Hire requests</TabBtn>
-            <TabBtn active={tab === "apply"} onClick={() => setTab("apply")} icon={<Mail className="h-4 w-4" />}>Job applications</TabBtn>
-            <TabBtn active={tab === "contact"} onClick={() => setTab("contact")} icon={<MessageSquare className="h-4 w-4" />}>Contact messages</TabBtn>
+            <TabBtn active={tab === "apply"} onClick={() => setTab("apply")} icon={<Mail className="h-4 w-4" />}>Applications</TabBtn>
+            <TabBtn active={tab === "contact"} onClick={() => setTab("contact")} icon={<MessageSquare className="h-4 w-4" />}>Messages</TabBtn>
+            <TabBtn active={tab === "training"} onClick={() => setTab("training")} icon={<GraduationCap className="h-4 w-4" />}>Training</TabBtn>
             <TabBtn active={tab === "staff"} onClick={() => setTab("staff")} icon={<Users className="h-4 w-4" />}>Staff</TabBtn>
+            <TabBtn active={tab === "candidates"} onClick={() => setTab("candidates")} icon={<UserCheck className="h-4 w-4" />}>Candidates</TabBtn>
+            <TabBtn active={tab === "vacancies"} onClick={() => setTab("vacancies")} icon={<Briefcase className="h-4 w-4" />}>Vacancies</TabBtn>
+            <TabBtn active={tab === "adverts"} onClick={() => setTab("adverts")} icon={<Megaphone className="h-4 w-4" />}>Adverts</TabBtn>
           </div>
 
           <div className="mt-6">
             {tab === "hire" && <HireList />}
             {tab === "apply" && <ApplyList />}
             {tab === "contact" && <ContactList />}
+            {tab === "training" && <TrainingList />}
             {tab === "staff" && <StaffManager />}
+            {tab === "candidates" && <CandidatesManager />}
+            {tab === "vacancies" && <VacanciesManager />}
+            {tab === "adverts" && <AdvertsManager />}
           </div>
         </div>
       </section>
