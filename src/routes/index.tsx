@@ -157,6 +157,65 @@ function Index() {
         </div>
       </section>
 
+      {/* LATEST FROM RELIEF CARE — ADVERTS */}
+      {adverts.length > 0 && (
+        <section className="py-24 bg-cream">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="reveal">
+              <p className="text-orange uppercase tracking-widest text-sm">Latest from Relief Care</p>
+              <h2 className="font-display text-4xl lg:text-5xl text-primary mt-2">News, promotions and announcements.</h2>
+            </div>
+            <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {adverts.map((a, i) => (
+                <article key={a.id} className="reveal group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-deep-blue text-white p-7 shadow-lg hover:shadow-2xl transition" style={{transitionDelay:`${i*40}ms`}}>
+                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber/25 rounded-full blur-2xl group-hover:bg-amber/40 transition" />
+                  <span className="relative inline-block text-[10px] font-bold tracking-[0.25em] uppercase bg-amber text-amber-foreground px-3 py-1 rounded-full">{a.category}</span>
+                  <h3 className="relative font-display text-2xl mt-4 leading-snug">{a.title}</h3>
+                  <p className="relative mt-3 text-white/80 text-sm leading-relaxed">{a.description}</p>
+                  {a.link_url && (
+                    <a href={a.link_url} className="relative mt-5 inline-flex items-center gap-2 text-amber font-bold text-sm hover:gap-3 transition-all">
+                      Learn more <ArrowRight className="h-4 w-4" />
+                    </a>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* READY FOR PLACEMENT — CANDIDATES */}
+      {candidates.length > 0 && (
+        <section className="py-24 bg-ivory-texture">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex flex-wrap items-end justify-between gap-4 reveal">
+              <div>
+                <p className="text-orange uppercase tracking-widest text-sm">Ready for Placement</p>
+                <h2 className="font-display text-4xl lg:text-5xl text-primary mt-2">Shortlisted candidates available now.</h2>
+              </div>
+              <Link to="/candidates" className="font-semibold text-primary hover:text-orange inline-flex items-center gap-2">View all candidates <ArrowRight className="h-4 w-4" /></Link>
+            </div>
+            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {candidates.slice(0,4).map((c) => (
+                <Link key={c.id} to="/candidates/$id" params={{ id: c.id }} className="reveal group bg-card rounded-3xl shadow hover:shadow-xl transition overflow-hidden">
+                  <div className="aspect-[4/5] overflow-hidden bg-muted relative">
+                    {c.photo_url ? <img src={c.photo_url} alt={c.full_name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-700" /> : <div className="w-full h-full grid place-items-center text-muted-foreground text-xs">No photo</div>}
+                    <span className={`absolute top-3 left-3 text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-full ${c.available ? "bg-[oklch(0.85_0.12_150)] text-[oklch(0.30_0.12_150)]" : "bg-amber/80 text-amber-foreground"}`}>
+                      {c.available ? "Available" : "Placed"}
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <p className="font-display text-lg text-primary truncate">{c.full_name}</p>
+                    <p className="text-xs text-orange font-bold uppercase tracking-wide">{c.job_role}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{c.years_experience ?? 0} yrs · {c.location ?? "Nigeria"}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* TESTIMONIAL PREVIEW */}
       <section className="bg-cream py-24">
         <div className="max-w-5xl mx-auto px-6 text-center reveal">
