@@ -232,15 +232,17 @@ function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-primary-foreground/70">
-          <p>© 2026 Relief Care Support Services Limited. All rights reserved.</p>
+        <div className="max-w-7xl mx-auto px-6 py-5 pb-24 md:pb-5 md:pr-28 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-primary-foreground/70">
+          <div className="flex items-center gap-4 flex-wrap justify-center">
+            <p>© 2026 Relief Care Support Services Limited.</p>
+            <Link to="/admin" className="inline-flex items-center gap-1 hover:text-amber" aria-label="Admin login">
+              <Lock className="h-3 w-3" /> Admin
+            </Link>
+          </div>
           <div className="flex gap-5 items-center flex-wrap justify-center">
             <Link to="/privacy" className="hover:text-amber">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-amber">Terms and Conditions</Link>
             <Link to="/cookies" className="hover:text-amber">Cookie Policy</Link>
-            <Link to="/admin" className="inline-flex items-center gap-1 hover:text-amber" aria-label="Admin login">
-              <Lock className="h-3 w-3" /> Admin
-            </Link>
           </div>
         </div>
       </div>
