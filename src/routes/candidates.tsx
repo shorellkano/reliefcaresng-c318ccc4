@@ -67,7 +67,7 @@ function Candidates() {
                   {c.photo_url ? (
                     <img src={c.photo_url} alt={c.full_name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" />
                   ) : (
-                    <div className="w-full h-full grid place-items-center text-muted-foreground">No photo</div>
+                    <div className="w-full h-full grid place-items-center bg-gradient-to-br from-orange/30 via-amber/30 to-primary/30 text-primary font-display text-6xl">{c.full_name.split(" ").map(n=>n[0]).slice(0,2).join("")}</div>
                   )}
                 </div>
                 <div className="p-5">
