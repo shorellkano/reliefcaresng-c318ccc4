@@ -218,8 +218,9 @@ function Footer() {
         <div>
           <p className="font-display text-amber mb-3">Get in Touch</p>
           <ul className="space-y-3 text-sm">
-            <li className="flex gap-2"><MapPin className="h-4 w-4 mt-0.5 text-amber shrink-0" />Suite 12 Veteran Plaza, Herbert Macaulay Way, By YABATECH Back Gate, Lagos.</li>
+            <li className="flex gap-2"><MapPin className="h-4 w-4 mt-0.5 text-amber shrink-0" />Suite 12, 443 Veterans Plaza, Herbert Macaulay Way, Yaba, Lagos.</li>
             <li className="flex gap-2"><Phone className="h-4 w-4 mt-0.5 text-amber" /><a href="tel:+2349090336443">+234 909 033 6443</a></li>
+            <li className="flex gap-2"><Phone className="h-4 w-4 mt-0.5 text-amber" /><a href="tel:+2349031933800">+234 903 193 3800</a></li>
             <li className="flex gap-2"><Mail className="h-4 w-4 mt-0.5 text-amber" /><a href="mailto:info@reliefcaresupport.com.ng">info@reliefcaresupport.com.ng</a></li>
           </ul>
           <div className="flex gap-3 mt-4">

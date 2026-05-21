@@ -85,9 +85,9 @@ function Index() {
             <div className="h-14 w-14 rounded-2xl bg-white/15 flex items-center justify-center"><Heart className="h-7 w-7 text-amber" /></div>
             <div>
               <p className="text-xs uppercase tracking-widest text-amber">Phase One</p>
-              <h2 className="font-display text-3xl lg:text-4xl mt-1">Care Giving</h2>
+              <h2 className="font-display text-3xl lg:text-4xl mt-1">Caregiving</h2>
               <p className="mt-3 text-white/85 max-w-md">Compassionate caregivers, trained nannies and elderly care professionals matched to your family with care.</p>
-              <p className="mt-4 inline-flex items-center gap-2 font-semibold text-amber">Explore care giving <ArrowRight className="h-4 w-4" /></p>
+              <p className="mt-4 inline-flex items-center gap-2 font-semibold text-amber">Explore caregiving <ArrowRight className="h-4 w-4" /></p>
             </div>
           </div>
         </Link>
@@ -170,8 +170,8 @@ function Index() {
                 <article key={a.id} className="reveal group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-deep-blue text-white p-7 shadow-lg hover:shadow-2xl transition" style={{transitionDelay:`${i*40}ms`}}>
                   <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber/25 rounded-full blur-2xl group-hover:bg-amber/40 transition" />
                   <span className="relative inline-block text-[10px] font-bold tracking-[0.25em] uppercase bg-amber text-amber-foreground px-3 py-1 rounded-full">{a.category}</span>
-                  <h3 className="relative font-display text-2xl mt-4 leading-snug">{a.title}</h3>
-                  <p className="relative mt-3 text-white/80 text-sm leading-relaxed">{a.description}</p>
+                  <h3 className="relative font-display text-2xl mt-4 leading-snug text-white drop-shadow">{a.title}</h3>
+                  <p className="relative mt-3 text-white text-sm leading-relaxed">{a.description}</p>
                   {a.link_url && (
                     <a href={a.link_url} className="relative mt-5 inline-flex items-center gap-2 text-amber font-bold text-sm hover:gap-3 transition-all">
                       Learn more <ArrowRight className="h-4 w-4" />
