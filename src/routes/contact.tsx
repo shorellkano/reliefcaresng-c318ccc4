@@ -9,7 +9,7 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Us | Relief Care Support Services" },
-      { name: "description", content: "Reach Relief Care Support Services in Lagos. Call, WhatsApp, email or visit us at Suite 12 Veteran Plaza, Herbert Macaulay Way, YABATECH Back Gate." },
+      { name: "description", content: "Reach Relief Care Support Services in Lagos. Call, WhatsApp, email or visit us at Suite 12, 443 Veterans Plaza, Herbert Macaulay Way, Yaba, Lagos." },
       { property: "og:title", content: "Contact Us" },
       { property: "og:description", content: "Get in touch with Relief Care Support Services." },
       { property: "og:url", content: "/contact" },
