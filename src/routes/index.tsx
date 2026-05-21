@@ -85,9 +85,9 @@ function Index() {
             <div className="h-14 w-14 rounded-2xl bg-white/15 flex items-center justify-center"><Heart className="h-7 w-7 text-amber" /></div>
             <div>
               <p className="text-xs uppercase tracking-widest text-amber">Phase One</p>
-              <h2 className="font-display text-3xl lg:text-4xl mt-1">Care Giving</h2>
+              <h2 className="font-display text-3xl lg:text-4xl mt-1">Caregiving</h2>
               <p className="mt-3 text-white/85 max-w-md">Compassionate caregivers, trained nannies and elderly care professionals matched to your family with care.</p>
-              <p className="mt-4 inline-flex items-center gap-2 font-semibold text-amber">Explore care giving <ArrowRight className="h-4 w-4" /></p>
+              <p className="mt-4 inline-flex items-center gap-2 font-semibold text-amber">Explore caregiving <ArrowRight className="h-4 w-4" /></p>
             </div>
           </div>
         </Link>
