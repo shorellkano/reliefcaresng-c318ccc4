@@ -170,8 +170,8 @@ function Index() {
                 <article key={a.id} className="reveal group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-deep-blue text-white p-7 shadow-lg hover:shadow-2xl transition" style={{transitionDelay:`${i*40}ms`}}>
                   <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber/25 rounded-full blur-2xl group-hover:bg-amber/40 transition" />
                   <span className="relative inline-block text-[10px] font-bold tracking-[0.25em] uppercase bg-amber text-amber-foreground px-3 py-1 rounded-full">{a.category}</span>
-                  <h3 className="relative font-display text-2xl mt-4 leading-snug">{a.title}</h3>
-                  <p className="relative mt-3 text-white/80 text-sm leading-relaxed">{a.description}</p>
+                  <h3 className="relative font-display text-2xl mt-4 leading-snug text-white drop-shadow">{a.title}</h3>
+                  <p className="relative mt-3 text-white text-sm leading-relaxed">{a.description}</p>
                   {a.link_url && (
                     <a href={a.link_url} className="relative mt-5 inline-flex items-center gap-2 text-amber font-bold text-sm hover:gap-3 transition-all">
                       Learn more <ArrowRight className="h-4 w-4" />
