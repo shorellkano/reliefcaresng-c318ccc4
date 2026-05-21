@@ -69,7 +69,7 @@ function Services() {
             <div className="inline-flex bg-card shadow-xl rounded-full p-1.5 border border-border">
               <button onClick={() => navigate({ search: { tab: "care" } })}
                 className={`px-6 sm:px-8 py-3 rounded-full font-display text-base sm:text-lg transition ${tab === "care" ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-primary"}`}>
-                Care Giving
+                Caregiving
               </button>
               <button onClick={() => navigate({ search: { tab: "domestic" } })}
                 className={`px-6 sm:px-8 py-3 rounded-full font-display text-base sm:text-lg transition ${tab === "domestic" ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:text-primary"}`}>
