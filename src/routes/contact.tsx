@@ -84,9 +84,11 @@ function Contact() {
             <div className="bg-deep-blue text-white rounded-3xl p-8 reveal">
               <h2 className="font-display text-2xl text-amber">Reach us directly</h2>
               <ul className="mt-5 space-y-4 text-sm">
-                <li className="flex gap-3"><MapPin className="h-5 w-5 text-amber shrink-0 mt-0.5" /><span>Suite 12 Veteran Plaza, Herbert Macaulay Way, By YABATECH Back Gate Staff Quarters, Lagos State.</span></li>
+                <li className="flex gap-3"><MapPin className="h-5 w-5 text-amber shrink-0 mt-0.5" /><span>Suite 12, 443 Veterans Plaza, Herbert Macaulay Way, Yaba, Lagos.</span></li>
                 <li className="flex gap-3"><Phone className="h-5 w-5 text-amber" /><a href="tel:+2349090336443">+234 909 033 6443</a></li>
+                <li className="flex gap-3"><Phone className="h-5 w-5 text-amber" /><a href="tel:+2349031933800">+234 903 193 3800</a></li>
                 <li className="flex gap-3"><MessageCircle className="h-5 w-5 text-amber" /><a href="https://wa.me/2349090336443" target="_blank" rel="noopener noreferrer">WhatsApp +234 909 033 6443</a></li>
+                <li className="flex gap-3"><MessageCircle className="h-5 w-5 text-amber" /><a href="https://wa.me/2349031933800" target="_blank" rel="noopener noreferrer">WhatsApp +234 903 193 3800</a></li>
                 <li className="flex gap-3"><Mail className="h-5 w-5 text-amber" /><a href="mailto:info@reliefcaresupport.com.ng">info@reliefcaresupport.com.ng</a></li>
                 <li className="flex gap-3"><Instagram className="h-5 w-5 text-amber" /><a href="https://www.instagram.com/reliefcaredomestic" target="_blank" rel="noopener noreferrer">@reliefcaredomestic</a></li>
                 <li className="flex gap-3"><Instagram className="h-5 w-5 text-amber" /><a href="https://www.instagram.com/reliefcaresupport" target="_blank" rel="noopener noreferrer">@reliefcaresupport</a></li>
