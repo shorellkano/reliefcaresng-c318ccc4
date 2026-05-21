@@ -1,0 +1,1 @@
+UPDATE public.candidates SET location = 'Ibadan' WHERE location = 'Enugu';
