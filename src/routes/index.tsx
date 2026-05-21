@@ -167,13 +167,14 @@ function Index() {
             </div>
             <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {adverts.map((a, i) => (
-                <article key={a.id} className="reveal group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-deep-blue text-white p-7 shadow-lg hover:shadow-2xl transition" style={{transitionDelay:`${i*40}ms`}}>
-                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber/25 rounded-full blur-2xl group-hover:bg-amber/40 transition" />
-                  <span className="relative inline-block text-[10px] font-bold tracking-[0.25em] uppercase bg-amber text-amber-foreground px-3 py-1 rounded-full">{a.category}</span>
-                  <h3 className="relative font-display text-2xl mt-4 leading-snug text-amber drop-shadow">{a.title}</h3>
-                  <p className="relative mt-3 text-cream text-sm leading-relaxed">{a.description}</p>
+                <article key={a.id} className="reveal group relative overflow-hidden rounded-3xl bg-gradient-to-br from-deep-blue via-primary to-[oklch(0.18_0.05_260)] text-white p-7 shadow-lg hover:shadow-2xl transition ring-1 ring-amber/20" style={{transitionDelay:`${i*40}ms`}}>
+                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-amber/20 rounded-full blur-2xl group-hover:bg-amber/35 transition" />
+                  <div className="absolute inset-0 bg-[oklch(0.12_0.04_260)]/40" />
+                  <span className="relative inline-block text-[10px] font-extrabold tracking-[0.25em] uppercase bg-amber text-amber-foreground px-3 py-1 rounded-full shadow-md">{a.category}</span>
+                  <h3 className="relative font-display text-2xl mt-4 leading-snug text-amber" style={{textShadow:'0 2px 8px oklch(0.15 0.05 260 / 0.6)'}}>{a.title}</h3>
+                  <p className="relative mt-3 text-white text-[15px] leading-relaxed font-medium" style={{textShadow:'0 1px 4px oklch(0.15 0.05 260 / 0.8)'}}>{a.description}</p>
                   {a.link_url && (
-                    <a href={a.link_url} className="relative mt-5 inline-flex items-center gap-2 text-amber font-bold text-sm hover:gap-3 transition-all">
+                    <a href={a.link_url} className="relative mt-5 inline-flex items-center gap-2 text-amber font-bold text-sm hover:gap-3 transition-all border-b border-amber/40 pb-0.5">
                       Learn more <ArrowRight className="h-4 w-4" />
                     </a>
                   )}
