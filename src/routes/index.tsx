@@ -218,20 +218,8 @@ function Index() {
       )}
 
       {/* TESTIMONIAL PREVIEW */}
-      <section className="bg-cream py-24">
-        <div className="max-w-5xl mx-auto px-6 text-center reveal">
-          <p className="text-orange uppercase tracking-widest text-sm">What Our Clients Say</p>
-          <h2 className="font-display text-4xl lg:text-5xl text-primary mt-2">Stories from real families.</h2>
-          <Quote className="mx-auto mt-10 h-12 w-12 text-amber" />
-          <p className="font-display italic text-2xl lg:text-3xl text-foreground/85 mt-6 leading-relaxed">
-            Relief Care found us the perfect nanny within days. She has become part of our family.
-          </p>
-          <p className="mt-4 text-sm font-bold tracking-widest uppercase text-primary">Mrs. Adeyemi, Lagos</p>
-          <Link to="/testimonials" className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3 font-bold hover:bg-primary-dark transition">
-            Read more stories <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </section>
+      <TestimonialCarousel />
+
 
       {/* CTA BANNER */}
       <section className="relative py-24 bg-deep-blue text-white overflow-hidden">
