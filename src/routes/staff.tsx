@@ -40,24 +40,33 @@ function StaffList() {
       <section className="pb-24 bg-cream">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {list.map((s, i) => (
+            {list.map((s, i) => {
+              const isPlaceholder = s.full_name === "Coming Soon";
+              return (
               <article key={s.id} className={`reveal bg-card rounded-3xl shadow-md hover:shadow-xl overflow-hidden ${i % 3 === 1 ? "lg:translate-y-6" : ""}`}>
                 <div className="aspect-[4/5] overflow-hidden relative">
                   <img src={s.photo_url ?? ""} alt={s.full_name} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition duration-700" />
-                  <span className={`absolute top-4 right-4 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full ${s.available ? "bg-amber text-amber-foreground" : "bg-foreground/70 text-white"}`}>
-                    {s.available ? "Available" : "Currently Placed"}
-                  </span>
+                  {!isPlaceholder && (
+                    <span className={`absolute top-4 right-4 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full ${s.available ? "bg-amber text-amber-foreground" : "bg-foreground/70 text-white"}`}>
+                      {s.available ? "Available" : "Currently Placed"}
+                    </span>
+                  )}
                 </div>
                 <div className="p-6">
                   <p className="font-display text-2xl text-primary">{s.full_name}</p>
                   <p className="text-orange font-semibold">{s.job_role}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{s.years_experience} years of experience</p>
-                  <Link to="/staff/$id" params={{ id: s.id }} className="mt-5 inline-flex items-center gap-2 font-bold text-primary hover:text-orange">
-                    View Full Profile <ArrowRight className="h-4 w-4" />
-                  </Link>
+                  {!isPlaceholder && <p className="text-sm text-muted-foreground mt-1">{s.years_experience} years of experience</p>}
+                  {isPlaceholder ? (
+                    <p className="mt-5 inline-flex items-center gap-2 font-bold text-muted-foreground">Profile coming soon</p>
+                  ) : (
+                    <Link to="/staff/$id" params={{ id: s.id }} className="mt-5 inline-flex items-center gap-2 font-bold text-primary hover:text-orange">
+                      View Full Profile <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
           {list.length === 0 && <p className="text-center text-muted-foreground py-20">Loading staff...</p>}
         </div>
