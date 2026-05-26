@@ -60,35 +60,52 @@ function Candidates() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((c, i) => (
-              <Link to="/candidates/$id" params={{ id: c.id }} key={c.id}
-                className={`reveal group bg-card rounded-3xl shadow-md hover:shadow-2xl overflow-hidden hover:-translate-y-1 transition ${i % 3 === 1 ? "lg:translate-y-6" : ""}`}>
-                <div className="aspect-[4/5] overflow-hidden bg-muted">
-                  {c.photo_url ? (
-                    <img src={c.photo_url} alt={c.full_name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" />
-                  ) : (
-                    <div className="w-full h-full grid place-items-center bg-gradient-to-br from-orange/30 via-amber/30 to-primary/30 text-primary font-display text-6xl">{c.full_name.split(" ").map(n=>n[0]).slice(0,2).join("")}</div>
-                  )}
-                </div>
-                <div className="p-5">
-                  <div className="flex items-center justify-between">
-                    <p className="font-display text-xl text-primary">{c.full_name}</p>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${c.available ? "bg-[oklch(0.85_0.12_150)] text-[oklch(0.30_0.12_150)]" : "bg-amber/30 text-orange"}`}>
-                      {c.available ? "Available Now" : "Recently Placed"}
-                    </span>
+            {filtered.map((c, i) => {
+              const isPlaceholder = c.full_name === "Coming Soon";
+              const CardInner = (
+                <>
+                  <div className="aspect-[4/5] overflow-hidden bg-muted">
+                    {c.photo_url ? (
+                      <img src={c.photo_url} alt={c.full_name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" />
+                    ) : (
+                      <div className="w-full h-full grid place-items-center bg-gradient-to-br from-orange/30 via-amber/30 to-primary/30 text-primary font-display text-6xl">{c.full_name.split(" ").map(n=>n[0]).slice(0,2).join("")}</div>
+                    )}
                   </div>
-                  <p className="text-sm text-orange font-semibold mt-0.5">{c.job_role}</p>
-                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-foreground/65">
-                    <span className="inline-flex items-center gap-1"><Briefcase className="h-3 w-3" />{c.years_experience ?? 0} yrs</span>
-                    {c.location && <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{c.location}</span>}
+                  <div className="p-5">
+                    <div className="flex items-center justify-between">
+                      <p className="font-display text-xl text-primary">{c.full_name}</p>
+                      {!isPlaceholder && (
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${c.available ? "bg-[oklch(0.85_0.12_150)] text-[oklch(0.30_0.12_150)]" : "bg-amber/30 text-orange"}`}>
+                          {c.available ? "Available Now" : "Recently Placed"}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-orange font-semibold mt-0.5">{c.job_role}</p>
+                    {!isPlaceholder && (
+                      <>
+                        <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-foreground/65">
+                          <span className="inline-flex items-center gap-1"><Briefcase className="h-3 w-3" />{c.years_experience ?? 0} yrs</span>
+                          {c.location && <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{c.location}</span>}
+                        </div>
+                        {c.languages && <p className="mt-2 text-xs text-foreground/60">Languages: {c.languages}</p>}
+                        <span className="mt-4 inline-flex text-sm font-bold text-primary group-hover:text-orange">
+                          View Full Profile <ArrowRight className="h-4 w-4 ml-1" />
+                        </span>
+                      </>
+                    )}
+                    {isPlaceholder && (
+                      <p className="mt-3 text-xs text-muted-foreground">New candidate profile coming soon.</p>
+                    )}
                   </div>
-                  {c.languages && <p className="mt-2 text-xs text-foreground/60">Languages: {c.languages}</p>}
-                  <span className="mt-4 inline-flex text-sm font-bold text-primary group-hover:text-orange">
-                    View Full Profile <ArrowRight className="h-4 w-4 ml-1" />
-                  </span>
-                </div>
-              </Link>
-            ))}
+                </>
+              );
+              const cls = `reveal group bg-card rounded-3xl shadow-md hover:shadow-2xl overflow-hidden hover:-translate-y-1 transition ${i % 3 === 1 ? "lg:translate-y-6" : ""}`;
+              return isPlaceholder ? (
+                <div key={c.id} className={cls}>{CardInner}</div>
+              ) : (
+                <Link to="/candidates/$id" params={{ id: c.id }} key={c.id} className={cls}>{CardInner}</Link>
+              );
+            })}
           </div>
 
           {filtered.length === 0 && (
