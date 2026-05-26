@@ -138,7 +138,9 @@ function Index() {
             <Link to="/staff" className="font-semibold text-primary hover:text-orange inline-flex items-center gap-2">View all staff <ArrowRight className="h-4 w-4" /></Link>
           </div>
           <div className="mt-10 flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory">
-            {staff.map((s) => (
+            {staff.map((s) => {
+              const isPlaceholder = s.full_name === "Coming Soon";
+              return (
               <div key={s.id} className="reveal min-w-[260px] sm:min-w-[300px] snap-start bg-card rounded-3xl shadow-md hover:shadow-xl transition overflow-hidden">
                 <div className="aspect-[4/5] overflow-hidden">
                   <img src={s.photo_url ?? ""} alt={s.full_name} className="w-full h-full object-cover hover:scale-105 transition duration-700" loading="lazy" />
@@ -146,13 +148,18 @@ function Index() {
                 <div className="p-5">
                   <p className="font-display text-xl text-primary">{s.full_name}</p>
                   <p className="text-sm text-orange font-semibold">{s.job_role}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{s.years_experience} years of experience</p>
-                  <Link to="/staff/$id" params={{ id: s.id }} className="mt-4 inline-flex text-sm font-bold text-primary hover:text-orange">
-                    View Profile <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
+                  {!isPlaceholder && <p className="text-xs text-muted-foreground mt-1">{s.years_experience} years of experience</p>}
+                  {isPlaceholder ? (
+                    <p className="mt-4 inline-flex text-sm font-bold text-muted-foreground">Profile coming soon</p>
+                  ) : (
+                    <Link to="/staff/$id" params={{ id: s.id }} className="mt-4 inline-flex text-sm font-bold text-primary hover:text-orange">
+                      View Profile <ArrowRight className="h-4 w-4 ml-1" />
+                    </Link>
+                  )}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
