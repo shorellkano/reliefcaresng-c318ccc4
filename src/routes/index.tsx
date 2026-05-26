@@ -218,20 +218,8 @@ function Index() {
       )}
 
       {/* TESTIMONIAL PREVIEW */}
-      <section className="bg-cream py-24">
-        <div className="max-w-5xl mx-auto px-6 text-center reveal">
-          <p className="text-orange uppercase tracking-widest text-sm">What Our Clients Say</p>
-          <h2 className="font-display text-4xl lg:text-5xl text-primary mt-2">Stories from real families.</h2>
-          <Quote className="mx-auto mt-10 h-12 w-12 text-amber" />
-          <p className="font-display italic text-2xl lg:text-3xl text-foreground/85 mt-6 leading-relaxed">
-            Relief Care found us the perfect nanny within days. She has become part of our family.
-          </p>
-          <p className="mt-4 text-sm font-bold tracking-widest uppercase text-primary">Mrs. Adeyemi, Lagos</p>
-          <Link to="/testimonials" className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3 font-bold hover:bg-primary-dark transition">
-            Read more stories <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </section>
+      <TestimonialCarousel />
+
 
       {/* CTA BANNER */}
       <section className="relative py-24 bg-deep-blue text-white overflow-hidden">
@@ -334,4 +322,73 @@ function KineticSeal() {
     </div>
   );
 }
+
+const FEATURED_TESTIMONIALS = [
+  {
+    quote: "My dad lives alone in Surulere and I am here in the United States. I was always anxious knowing he had no one close by to check on him. I reached out to Relief Care from the US and they took it from there. Everything was sorted on the ground without me having to fly back home. Within days a caregiver was with him. My dad calls me now sounding so happy and well taken care of. Relief Care gave me the peace of mind I never thought I could have from this far. I am so grateful.",
+    who: "Tolu A.",
+    location: "United States · son of client in Surulere, Lagos",
+    tag: "🇺🇸 USA",
+  },
+  {
+    quote: "My mum is a widow and has been living alone in Magodo since my dad passed. I contacted Relief Care and explained exactly what I needed, not just a carer but a companion for her. Now my mum has someone who sits with her, watches TV with her, talks with her and makes her laugh again. The difference in her voice when I call is everything. I cannot thank Relief Care enough for giving my mother her joy back.",
+    who: "Mr Evoh",
+    location: "United Kingdom · son of client in Magodo, Lagos",
+    tag: "🇬🇧 UK",
+  },
+  {
+    quote: "I am a grandmother in Ijebu, Ogun State. My grandchildren thought because I live far from Lagos I would not get good care. But Relief Care came all the way to me. My caregiver is respectful, hardworking and treats me with so much dignity. I thank God for this company.",
+    who: "Mama Akinlade",
+    location: "Ijebu, Ogun State",
+    tag: "🇳🇬 Ogun",
+  },
+];
+
+function TestimonialCarousel() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI((p) => (p + 1) % FEATURED_TESTIMONIALS.length), 7000);
+    return () => clearInterval(t);
+  }, []);
+  const t = FEATURED_TESTIMONIALS[i];
+  return (
+    <section className="py-24 bg-gradient-to-br from-cream via-ivory to-amber/15">
+      <div className="max-w-4xl mx-auto px-6 text-center reveal">
+        <p className="text-orange uppercase tracking-widest text-sm">What Our Clients Say</p>
+        <h2 className="font-display text-4xl lg:text-5xl text-primary mt-2">Stories from real families.</h2>
+        <div className="mt-12 relative bg-card border border-amber/30 rounded-3xl shadow-xl p-8 lg:p-12 min-h-[320px]">
+          <span className="absolute -top-3 right-6 text-xs font-bold tracking-widest uppercase bg-primary text-primary-foreground px-3 py-1 rounded-full shadow">
+            {t.tag}
+          </span>
+          <Quote className="mx-auto h-12 w-12 text-amber" strokeWidth={1.5} />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={t.who}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.5 }}
+            >
+              <p className="mt-5 text-foreground/85 text-[17px] lg:text-lg leading-relaxed text-left">
+                {t.quote}
+              </p>
+              <p className="mt-6 text-sm font-bold tracking-widest uppercase text-primary">{t.who}</p>
+              <p className="text-xs italic text-muted-foreground mt-1">{t.location}</p>
+            </motion.div>
+          </AnimatePresence>
+          <div className="mt-6 flex justify-center gap-2">
+            {FEATURED_TESTIMONIALS.map((_, idx) => (
+              <button key={idx} onClick={() => setI(idx)} aria-label={`Testimonial ${idx + 1}`}
+                className={`h-2 rounded-full transition-all ${idx === i ? "w-8 bg-primary" : "w-2 bg-primary/30"}`} />
+            ))}
+          </div>
+        </div>
+        <Link to="/testimonials" className="mt-10 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3 font-bold hover:bg-primary-dark transition">
+          Read more stories <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 
