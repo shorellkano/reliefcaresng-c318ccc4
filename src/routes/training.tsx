@@ -88,7 +88,7 @@ function EnquirySection() {
       message: String(f.get("message") ?? ""),
     };
     const { error } = await supabase.from("training_enquiries").insert(payload);
-    if (error) { setErr(error.message); setBusy(false); return; }
+    if (error) { console.error("training submit", error); setErr("Submission failed. Please check your details and try again."); setBusy(false); return; }
     try {
       await sendFormNotification({ data: { kind: "contact", subject: `Training enquiry: ${payload.program || "general"}`, fields: payload } });
     } catch {}
