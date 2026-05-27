@@ -44,7 +44,6 @@ function Admin() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
@@ -68,24 +67,8 @@ function Admin() {
     e.preventDefault();
     setErr(null);
     const normalized = email.trim().toLowerCase();
-    if (normalized !== ADMIN_EMAIL) {
-      setErr(`Admin access is restricted to ${ADMIN_EMAIL}.`);
-      return;
-    }
-    if (mode === "signup") {
-      const { data, error } = await supabase.auth.signUp({
-        email: normalized, password,
-        options: { emailRedirectTo: `${window.location.origin}/admin` },
-      });
-      if (error) return setErr(error.message);
-      if (data.user) {
-        const { count } = await supabase.from("user_roles").select("*", { count: "exact", head: true }).eq("role", "admin");
-        if (!count) await supabase.from("user_roles").insert({ user_id: data.user.id, role: "admin" });
-      }
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email: normalized, password });
-      if (error) setErr(error.message);
-    }
+    const { error } = await supabase.auth.signInWithPassword({ email: normalized, password });
+    if (error) setErr("Invalid email or password.");
   }
 
   if (authed === null) return <Layout hideWhatsApp><p className="text-center py-32 text-muted-foreground">Loading...</p></Layout>;
@@ -95,18 +78,15 @@ function Admin() {
       <Layout hideWhatsApp>
         <section className="py-16 bg-ivory-texture min-h-[70vh]">
           <form onSubmit={onAuth} className="max-w-md mx-auto bg-card rounded-3xl shadow-2xl p-8 space-y-5">
-            <h1 className="font-display text-3xl text-primary">Admin {mode === "signin" ? "sign in" : "sign up"}</h1>
-            <p className="text-sm text-muted-foreground">Access restricted to <strong>{ADMIN_EMAIL}</strong>.</p>
+            <h1 className="font-display text-3xl text-primary">Admin sign in</h1>
+            <p className="text-sm text-muted-foreground">Access restricted to authorised administrators. Accounts are provisioned manually.</p>
             <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" required
               className="w-full rounded-xl border border-border bg-input/40 px-4 py-3" />
             <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" required minLength={6}
               className="w-full rounded-xl border border-border bg-input/40 px-4 py-3" />
             {err && <p className="text-destructive text-sm">{err}</p>}
             <button className="w-full rounded-full bg-primary text-primary-foreground py-3 font-bold">
-              {mode === "signin" ? "Sign in" : "Create admin account"}
-            </button>
-            <button type="button" onClick={() => setMode(mode === "signin" ? "signup" : "signin")} className="text-sm text-primary underline w-full">
-              {mode === "signin" ? "First time? Create admin account" : "Already have an account? Sign in"}
+              Sign in
             </button>
           </form>
         </section>
