@@ -49,7 +49,7 @@ function Hire() {
       sendFormNotification({ data: { kind: "hire", subject: `New Hire Request — ${payload.full_name}`, fields: payload } }).catch(() => {});
     }
     setBusy(false);
-    if (error) { setErr(error.message); return; }
+    if (error) { console.error("hire submit", error); setErr("Submission failed. Please check your details and try again."); return; }
     setDone(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
