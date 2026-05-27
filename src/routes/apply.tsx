@@ -66,8 +66,8 @@ function Apply() {
       setDone(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Something went wrong. Please try again.";
-      setErr(msg);
+      console.error("apply submit", e);
+      setErr("Submission failed. Please check your details and try again.");
     } finally { setBusy(false); }
   }
 
