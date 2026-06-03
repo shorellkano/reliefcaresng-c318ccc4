@@ -4,7 +4,9 @@ export default defineConfig({
   tanstackStart: {
     adapter: "static",
   },
-  build: {
-    outDir: "dist/client",
+  vite: {
+    build: {
+      outDir: "dist/client",
+    },
   },
 });
